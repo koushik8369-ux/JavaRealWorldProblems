@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class LibraryFineCalculator {
@@ -6,14 +7,39 @@ public class LibraryFineCalculator {
 
         System.out.println("\n--- Library Fine Calculator ---");
 
-        System.out.print(
-                "Enter number of overdue days: ");
+        int overdueDays;
 
-        int overdueDays = sc.nextInt();
+        while (true) {
+
+            try {
+
+                System.out.print(
+                        "Enter number of overdue days: ");
+
+                overdueDays = sc.nextInt();
+
+                if (overdueDays < 0) {
+
+                    System.out.println(
+                            "Invalid input! Overdue days cannot be negative.");
+
+                    continue;
+                }
+
+                break;
+
+            } catch (InputMismatchException e) {
+
+                System.out.println(
+                        "Invalid input! Please enter a whole number.");
+
+                sc.nextLine();
+            }
+        }
 
         double fine;
 
-        if (overdueDays <= 0) {
+        if (overdueDays == 0) {
 
             fine = 0;
 

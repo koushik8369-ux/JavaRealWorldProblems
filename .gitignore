@@ -1,1 +1,5 @@
+# Java compiled files
 *.class
+
+# Runtime student data
+Projects/CollegeStudentUtilitySystem/students.txt

@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class AttendanceChecker {
@@ -6,11 +7,62 @@ public class AttendanceChecker {
 
         System.out.println("\n--- Attendance Eligibility Checker ---");
 
-        System.out.print("Enter total classes: ");
-        int totalClasses = sc.nextInt();
+        int totalClasses;
 
-        System.out.print("Enter classes attended: ");
-        int attendedClasses = sc.nextInt();
+        while (true) {
+
+            try {
+
+                System.out.print("Enter total classes: ");
+                totalClasses = sc.nextInt();
+
+                if (totalClasses <= 0) {
+
+                    System.out.println(
+                            "Invalid input! Total classes must be greater than 0.");
+                    continue;
+                }
+
+                break;
+
+            } catch (InputMismatchException e) {
+
+                System.out.println(
+                        "Invalid input! Please enter a whole number.");
+
+                sc.nextLine();
+            }
+        }
+
+        int attendedClasses;
+
+        while (true) {
+
+            try {
+
+                System.out.print("Enter classes attended: ");
+                attendedClasses = sc.nextInt();
+
+                if (attendedClasses < 0 ||
+                        attendedClasses > totalClasses) {
+
+                    System.out.println(
+                            "Invalid input! Attended classes must be between 0 and "
+                                    + totalClasses + ".");
+
+                    continue;
+                }
+
+                break;
+
+            } catch (InputMismatchException e) {
+
+                System.out.println(
+                        "Invalid input! Please enter a whole number.");
+
+                sc.nextLine();
+            }
+        }
 
         double attendance =
                 ((double) attendedClasses / totalClasses) * 100;

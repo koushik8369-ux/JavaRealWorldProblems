@@ -1,3 +1,4 @@
+import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class GradeCalculator {
@@ -6,57 +7,178 @@ public class GradeCalculator {
 
         System.out.println("\n--- Grade & CGPA Calculator ---");
 
-        System.out.print("Enter number of subjects: ");
-        int subjects = sc.nextInt();
+        int subjects;
 
+        while (true) {
+
+            try {
+
+                System.out.print("Enter number of subjects: ");
+                subjects = sc.nextInt();
+
+                if (subjects <= 0) {
+
+                    System.out.println(
+                            "Invalid input! Number of subjects must be greater than 0.");
+
+                    continue;
+                }
+
+                break;
+
+            } catch (InputMismatchException e) {
+
+                System.out.println(
+                        "Invalid input! Please enter a whole number.");
+
+                sc.nextLine();
+            }
+        }
+
+        double totalWeightedPoints = 0;
+        int totalCredits = 0;
         double totalMarks = 0;
 
         for (int i = 1; i <= subjects; i++) {
 
-            System.out.print(
-                    "Enter marks for subject "
-                            + i + ": ");
+            System.out.println("\nSubject " + i);
 
-            double marks = sc.nextDouble();
+            sc.nextLine();
 
+            System.out.print("Enter subject name: ");
+            String subjectName = sc.nextLine();
+
+            double marks;
+
+            while (true) {
+
+                try {
+
+                    System.out.print("Enter marks (0-100): ");
+                    marks = sc.nextDouble();
+
+                    if (marks < 0 || marks > 100) {
+
+                        System.out.println(
+                                "Invalid marks! Enter marks between 0 and 100.");
+
+                        continue;
+                    }
+
+                    break;
+
+                } catch (InputMismatchException e) {
+
+                    System.out.println(
+                            "Invalid input! Please enter a number.");
+
+                    sc.nextLine();
+                }
+            }
+
+            int credits;
+
+            while (true) {
+
+                try {
+
+                    System.out.print("Enter subject credits: ");
+                    credits = sc.nextInt();
+
+                    if (credits <= 0) {
+
+                        System.out.println(
+                                "Credits must be greater than 0.");
+
+                        continue;
+                    }
+
+                    break;
+
+                } catch (InputMismatchException e) {
+
+                    System.out.println(
+                            "Invalid input! Please enter a whole number.");
+
+                    sc.nextLine();
+                }
+            }
+
+            String grade;
+            int gradePoint;
+
+            if (marks >= 90) {
+
+                grade = "A+";
+                gradePoint = 10;
+
+            } else if (marks >= 80) {
+
+                grade = "A";
+                gradePoint = 9;
+
+            } else if (marks >= 70) {
+
+                grade = "B";
+                gradePoint = 8;
+
+            } else if (marks >= 60) {
+
+                grade = "C";
+                gradePoint = 7;
+
+            } else if (marks >= 50) {
+
+                grade = "D";
+                gradePoint = 6;
+
+            } else {
+
+                grade = "F";
+                gradePoint = 0;
+            }
+
+            double weightedPoints =
+                    gradePoint * credits;
+
+            totalWeightedPoints += weightedPoints;
+            totalCredits += credits;
             totalMarks += marks;
+
+            System.out.println("\nSubject Result");
+            System.out.println("------------------------------");
+            System.out.println("Subject: " + subjectName);
+            System.out.println("Marks: " + marks);
+            System.out.println("Credits: " + credits);
+            System.out.println("Grade: " + grade);
+            System.out.println("Grade Point: " + gradePoint);
         }
 
-        double average =
+        double averageMarks =
                 totalMarks / subjects;
 
         double cgpa =
-                average / 10;
+                totalWeightedPoints / totalCredits;
 
-        String grade;
-
-        if (average >= 90) {
-            grade = "A+";
-        } else if (average >= 80) {
-            grade = "A";
-        } else if (average >= 70) {
-            grade = "B";
-        } else if (average >= 60) {
-            grade = "C";
-        } else if (average >= 50) {
-            grade = "D";
-        } else {
-            grade = "F";
-        }
+        System.out.println("\n==========================================");
+        System.out.println("             FINAL RESULT");
+        System.out.println("==========================================");
 
         System.out.printf(
-                "\nTotal Marks: %.2f%n",
+                "Total Marks: %.2f%n",
                 totalMarks);
 
         System.out.printf(
-                "Average: %.2f%n",
-                average);
+                "Average Marks: %.2f%n",
+                averageMarks);
 
         System.out.println(
-                "Grade: " + grade);
+                "Total Credits: " + totalCredits);
 
         System.out.printf(
                 "CGPA: %.2f%n",
                 cgpa);
+
+        System.out.println("==========================================");
     }
 }
