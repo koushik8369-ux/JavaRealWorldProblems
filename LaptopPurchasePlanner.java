@@ -31,7 +31,9 @@ public class LaptopPurchasePlanner {
             System.out.println("Amount needed: ₹" + remainingAmount);
 
             if (remainingAmount <= budget) {
+
                 System.out.println("Status: You can buy it using your budget.");
+
             } else {
 
                 System.out.println("Status: You need more money.");
@@ -44,16 +46,31 @@ public class LaptopPurchasePlanner {
                     System.out.print("Enter EMI months: ");
                     int months = sc.nextInt();
 
-                    double monthlyEMI = remainingAmount / months;
+                    System.out.print("Enter annual interest rate (%): ");
+                    double annualRate = sc.nextDouble();
+
+                    double monthlyRate = annualRate / 12 / 100;
+
+                    double monthlyEMI =
+                            (remainingAmount * monthlyRate
+                            * Math.pow(1 + monthlyRate, months))
+                            / (Math.pow(1 + monthlyRate, months) - 1);
+
+                    double totalPayment = monthlyEMI * months;
+                    double totalInterest = totalPayment - remainingAmount;
 
                     System.out.println("\n--- EMI Details ---");
                     System.out.println("Amount through EMI: ₹" + remainingAmount);
                     System.out.println("EMI Months: " + months);
+                    System.out.println("Annual Interest Rate: " + annualRate + "%");
                     System.out.println("Monthly EMI: ₹" + monthlyEMI);
+                    System.out.println("Total Interest: ₹" + totalInterest);
+                    System.out.println("Total Payment: ₹" + totalPayment);
 
                 } else {
 
                     System.out.println("EMI not selected.");
+                    System.out.println("Please save more money before purchasing.");
                 }
             }
         }
