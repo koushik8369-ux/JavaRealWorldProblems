@@ -6,39 +6,52 @@ public class LaptopPurchasePlanner {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.print("Enter laptop price: ");
+        System.out.println("=================================");
+        System.out.println("   STUDENT LAPTOP PURCHASE PLANNER");
+        System.out.println("=================================");
+
+        System.out.print("Enter laptop price: ₹");
         double laptopPrice = sc.nextDouble();
 
-        System.out.print("Enter your budget: ");
+        System.out.print("Enter your budget: ₹");
         double budget = sc.nextDouble();
 
-        System.out.print("Enter your savings: ");
+        System.out.print("Enter your savings: ₹");
         double savings = sc.nextDouble();
 
         double remainingAmount = laptopPrice - savings;
 
-        System.out.println("\n--- Laptop Purchase Summary ---");
-        System.out.println("Laptop Price: ₹" + laptopPrice);
-        System.out.println("Budget: ₹" + budget);
-        System.out.println("Savings: ₹" + savings);
+        double savingsPercentage = (savings / laptopPrice) * 100;
+
+        System.out.println("\n--- Purchase Summary ---");
+        System.out.println("Laptop Price      : ₹" + laptopPrice);
+        System.out.println("Budget            : ₹" + budget);
+        System.out.println("Savings           : ₹" + savings);
+        System.out.println("Savings Covered   : " + savingsPercentage + "%");
 
         if (savings >= laptopPrice) {
 
-            System.out.println("Status: You can buy the laptop.");
+            System.out.println("\nStatus: You can buy the laptop.");
+            System.out.println("You have enough savings.");
 
         } else {
 
-            System.out.println("Amount needed: ₹" + remainingAmount);
+            System.out.println("\nAmount Needed: ₹" + remainingAmount);
 
-            if (remainingAmount <= budget) {
+            if (budget >= laptopPrice) {
 
-                System.out.println("Status: You can buy it using your budget.");
+                System.out.println("Status: Your budget is sufficient.");
+                System.out.println("You need ₹" + remainingAmount + " more from savings.");
 
             } else {
 
-                System.out.println("Status: You need more money.");
+                System.out.println("Status: Your current budget is not sufficient.");
 
-                System.out.print("Do you want EMI? (yes/no): ");
+                double budgetShortage = laptopPrice - budget;
+
+                System.out.println("Budget Shortage: ₹" + budgetShortage);
+
+                System.out.print("\nDo you want EMI? (yes/no): ");
                 String emiChoice = sc.next();
 
                 if (emiChoice.equalsIgnoreCase("yes")) {
@@ -57,23 +70,41 @@ public class LaptopPurchasePlanner {
                             / (Math.pow(1 + monthlyRate, months) - 1);
 
                     double totalPayment = monthlyEMI * months;
+
                     double totalInterest = totalPayment - remainingAmount;
 
                     System.out.println("\n--- EMI Details ---");
-                    System.out.println("Amount through EMI: ₹" + remainingAmount);
-                    System.out.println("EMI Months: " + months);
-                    System.out.println("Annual Interest Rate: " + annualRate + "%");
-                    System.out.println("Monthly EMI: ₹" + monthlyEMI);
-                    System.out.println("Total Interest: ₹" + totalInterest);
-                    System.out.println("Total Payment: ₹" + totalPayment);
+                    System.out.println("Amount through EMI : ₹" + remainingAmount);
+                    System.out.println("EMI Months         : " + months);
+                    System.out.println("Annual Interest    : " + annualRate + "%");
+                    System.out.println("Monthly EMI        : ₹" + monthlyEMI);
+                    System.out.println("Total Interest     : ₹" + totalInterest);
+                    System.out.println("Total Payment      : ₹" + totalPayment);
 
                 } else {
 
-                    System.out.println("EMI not selected.");
-                    System.out.println("Please save more money before purchasing.");
+                    System.out.println("\nEMI not selected.");
+
+                    System.out.print(
+                            "Enter how many months you want to save: ");
+                    int savingMonths = sc.nextInt();
+
+                    double monthlySaving =
+                            remainingAmount / savingMonths;
+
+                    System.out.println("\n--- Saving Plan ---");
+                    System.out.println("Amount to Save     : ₹" + remainingAmount);
+                    System.out.println("Saving Period      : "
+                            + savingMonths + " months");
+                    System.out.println("Save Per Month     : ₹"
+                            + monthlySaving);
                 }
             }
         }
+
+        System.out.println("\n=================================");
+        System.out.println("        THANK YOU!");
+        System.out.println("=================================");
 
         sc.close();
     }
