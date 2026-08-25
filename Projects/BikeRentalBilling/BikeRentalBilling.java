@@ -1,5 +1,39 @@
 import java.util.Scanner;
 
+class BikeRental {
+
+    private String customerName;
+    private String bikeModel;
+    private int rentalDays;
+    private double costPerDay;
+
+    public BikeRental(String customerName, String bikeModel,
+                      int rentalDays, double costPerDay) {
+
+        this.customerName = customerName;
+        this.bikeModel = bikeModel;
+        this.rentalDays = rentalDays;
+        this.costPerDay = costPerDay;
+    }
+
+    public double calculateTotal() {
+        return rentalDays * costPerDay;
+    }
+
+    public void displayBill() {
+
+        double total = calculateTotal();
+
+        System.out.println("\n========== RENTAL BILL ==========");
+        System.out.println("Customer     : " + customerName);
+        System.out.println("Bike Model   : " + bikeModel);
+        System.out.println("Rental Days  : " + rentalDays);
+        System.out.println("Cost Per Day : ₹" + costPerDay);
+        System.out.println("--------------------------------");
+        System.out.println("Total Amount : ₹" + total);
+    }
+}
+
 public class BikeRentalBilling {
 
     public static void main(String[] args) {
@@ -20,15 +54,14 @@ public class BikeRentalBilling {
         System.out.print("Enter cost per day: ");
         double costPerDay = sc.nextDouble();
 
-        double total = rentalDays * costPerDay;
+        BikeRental rental = new BikeRental(
+                customerName,
+                bikeModel,
+                rentalDays,
+                costPerDay
+        );
 
-        System.out.println("\n========== RENTAL BILL ==========");
-        System.out.println("Customer     : " + customerName);
-        System.out.println("Bike Model   : " + bikeModel);
-        System.out.println("Rental Days  : " + rentalDays);
-        System.out.println("Cost Per Day : ₹" + costPerDay);
-        System.out.println("-------------------------------");
-        System.out.println("Total Amount : ₹" + total);
+        rental.displayBill();
 
         sc.close();
     }
