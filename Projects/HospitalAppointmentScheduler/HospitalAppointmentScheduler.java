@@ -64,17 +64,20 @@ class Appointment {
     private int appointmentId;
     private Patient patient;
     private Doctor doctor;
+    private String appointmentDate;
     private String appointmentTime;
     private String status;
 
     public Appointment(int appointmentId,
                        Patient patient,
                        Doctor doctor,
+                       String appointmentDate,
                        String appointmentTime) {
 
         this.appointmentId = appointmentId;
         this.patient = patient;
         this.doctor = doctor;
+        this.appointmentDate = appointmentDate;
         this.appointmentTime = appointmentTime;
         this.status = "BOOKED";
     }
@@ -83,18 +86,37 @@ class Appointment {
         return appointmentId;
     }
 
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public String getAppointmentDate() {
+        return appointmentDate;
+    }
+
+    public String getAppointmentTime() {
+        return appointmentTime;
+    }
+
     public String getStatus() {
         return status;
     }
 
     public void cancelAppointment() {
+
         if (status.equals("BOOKED")) {
             status = "CANCELLED";
         }
     }
 
-    public void reschedule(String newTime) {
+    public void reschedule(String newDate, String newTime) {
+
         if (status.equals("BOOKED")) {
+            appointmentDate = newDate;
             appointmentTime = newTime;
         }
     }
@@ -127,6 +149,7 @@ class Appointment {
 
         System.out.println("----------------------------------------");
 
+        System.out.println("Appointment Date : " + appointmentDate);
         System.out.println("Appointment Time : " + appointmentTime);
         System.out.println("Status           : " + status);
 
@@ -166,25 +189,29 @@ public class HospitalAppointmentScheduler {
                     break;
 
                 case 3:
-                    searchAppointment(sc);
+                    searchByAppointmentId(sc);
                     break;
 
                 case 4:
-                    rescheduleAppointment(sc);
+                    searchByPatientId(sc);
                     break;
 
                 case 5:
-                    cancelAppointment(sc);
+                    rescheduleAppointment(sc);
                     break;
 
                 case 6:
-                    displaySummary();
+                    cancelAppointment(sc);
                     break;
 
                 case 7:
+                    displaySummary();
+                    break;
+
+                case 8:
                     System.out.println();
                     System.out.println(
-                            "Thank you for using the Hospital Appointment Scheduler."
+                            "Thank you for using the Hospital Appointment Scheduler V4."
                     );
                     System.out.println("Goodbye!");
                     break;
@@ -196,7 +223,7 @@ public class HospitalAppointmentScheduler {
                     );
             }
 
-        } while (choice != 7);
+        } while (choice != 8);
 
         sc.close();
     }
@@ -205,15 +232,16 @@ public class HospitalAppointmentScheduler {
 
         System.out.println();
         System.out.println("========================================");
-        System.out.println("   HOSPITAL APPOINTMENT SCHEDULER");
+        System.out.println("   HOSPITAL APPOINTMENT SCHEDULER V4");
         System.out.println("========================================");
         System.out.println("1. Book Appointment");
         System.out.println("2. View All Appointments");
-        System.out.println("3. Search Appointment");
-        System.out.println("4. Reschedule Appointment");
-        System.out.println("5. Cancel Appointment");
-        System.out.println("6. Appointment Summary");
-        System.out.println("7. Exit");
+        System.out.println("3. Search by Appointment ID");
+        System.out.println("4. Search by Patient ID");
+        System.out.println("5. Reschedule Appointment");
+        System.out.println("6. Cancel Appointment");
+        System.out.println("7. Appointment Summary");
+        System.out.println("8. Exit");
         System.out.println("========================================");
     }
 
@@ -246,6 +274,9 @@ public class HospitalAppointmentScheduler {
         System.out.print("Enter consultation fee: ");
         double consultationFee = sc.nextDouble();
         sc.nextLine();
+
+        System.out.print("Enter appointment date (DD-MM-YYYY): ");
+        String appointmentDate = sc.nextLine();
 
         System.out.print("Enter appointment time: ");
         String appointmentTime = sc.nextLine();
@@ -285,8 +316,28 @@ public class HospitalAppointmentScheduler {
             return;
         }
 
+        if (appointmentDate.trim().isEmpty()) {
+            System.out.println("Appointment date cannot be empty.");
+            return;
+        }
+
         if (appointmentTime.trim().isEmpty()) {
             System.out.println("Appointment time cannot be empty.");
+            return;
+        }
+
+        if (!isDoctorAvailable(
+                doctorId,
+                appointmentDate,
+                appointmentTime
+        )) {
+
+            System.out.println();
+            System.out.println(
+                    "Doctor is not available at this date and time."
+            );
+            System.out.println("Please choose another slot.");
+
             return;
         }
 
@@ -307,23 +358,47 @@ public class HospitalAppointmentScheduler {
                 nextAppointmentId,
                 patient,
                 doctor,
+                appointmentDate,
                 appointmentTime
         );
 
         appointments.add(appointment);
 
         System.out.println();
-        System.out.println("Appointment booked successfully!");
-        System.out.println("Appointment ID: " + nextAppointmentId);
+        System.out.println("Doctor is available!");
+        System.out.println();
+        System.out.println("Appointment booked successfully.");
+        System.out.println("Appointment ID : " + nextAppointmentId);
 
         nextAppointmentId++;
+    }
+
+    private static boolean isDoctorAvailable(
+            int doctorId,
+            String date,
+            String time) {
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getDoctor().getDoctorId() == doctorId
+                    && appointment.getAppointmentDate().equalsIgnoreCase(date)
+                    && appointment.getAppointmentTime().equalsIgnoreCase(time)
+                    && appointment.getStatus().equals("BOOKED")) {
+
+                return false;
+            }
+        }
+
+        return true;
     }
 
     private static void viewAllAppointments() {
 
         if (appointments.isEmpty()) {
+
             System.out.println();
             System.out.println("No appointments found.");
+
             return;
         }
 
@@ -331,11 +406,12 @@ public class HospitalAppointmentScheduler {
         System.out.println("========== ALL APPOINTMENTS ==========");
 
         for (Appointment appointment : appointments) {
+
             appointment.displayAppointment();
         }
     }
 
-    private static void searchAppointment(Scanner sc) {
+    private static void searchByAppointmentId(Scanner sc) {
 
         System.out.print("Enter appointment ID: ");
         int id = sc.nextInt();
@@ -346,11 +422,35 @@ public class HospitalAppointmentScheduler {
             if (appointment.getAppointmentId() == id) {
 
                 appointment.displayAppointment();
+
                 return;
             }
         }
 
         System.out.println("Appointment not found.");
+    }
+
+    private static void searchByPatientId(Scanner sc) {
+
+        System.out.print("Enter patient ID: ");
+        int patientId = sc.nextInt();
+        sc.nextLine();
+
+        boolean found = false;
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getPatient().getPatientId() == patientId) {
+
+                appointment.displayAppointment();
+
+                found = true;
+            }
+        }
+
+        if (!found) {
+            System.out.println("No appointments found for this patient.");
+        }
     }
 
     private static void rescheduleAppointment(Scanner sc) {
@@ -364,21 +464,48 @@ public class HospitalAppointmentScheduler {
             if (appointment.getAppointmentId() == id) {
 
                 if (appointment.getStatus().equals("CANCELLED")) {
+
                     System.out.println(
                             "Cancelled appointments cannot be rescheduled."
                     );
+
                     return;
                 }
+
+                System.out.print(
+                        "Enter new appointment date (DD-MM-YYYY): "
+                );
+
+                String newDate = sc.nextLine();
 
                 System.out.print("Enter new appointment time: ");
+
                 String newTime = sc.nextLine();
 
-                if (newTime.trim().isEmpty()) {
-                    System.out.println("Appointment time cannot be empty.");
+                if (newDate.trim().isEmpty()
+                        || newTime.trim().isEmpty()) {
+
+                    System.out.println(
+                            "Date and time cannot be empty."
+                    );
+
                     return;
                 }
 
-                appointment.reschedule(newTime);
+                if (!isDoctorAvailable(
+                        appointment.getDoctor().getDoctorId(),
+                        newDate,
+                        newTime
+                )) {
+
+                    System.out.println(
+                            "Doctor is not available at the new slot."
+                    );
+
+                    return;
+                }
+
+                appointment.reschedule(newDate, newTime);
 
                 System.out.println(
                         "Appointment rescheduled successfully."
@@ -402,9 +529,11 @@ public class HospitalAppointmentScheduler {
             if (appointment.getAppointmentId() == id) {
 
                 if (appointment.getStatus().equals("CANCELLED")) {
+
                     System.out.println(
                             "Appointment is already cancelled."
                     );
+
                     return;
                 }
 
@@ -429,8 +558,11 @@ public class HospitalAppointmentScheduler {
         for (Appointment appointment : appointments) {
 
             if (appointment.getStatus().equals("BOOKED")) {
+
                 booked++;
+
             } else if (appointment.getStatus().equals("CANCELLED")) {
+
                 cancelled++;
             }
         }
