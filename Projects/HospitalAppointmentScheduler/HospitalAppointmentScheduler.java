@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 class Patient {
@@ -78,8 +79,24 @@ class Appointment {
         this.status = "BOOKED";
     }
 
+    public int getAppointmentId() {
+        return appointmentId;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
     public void cancelAppointment() {
-        status = "CANCELLED";
+        if (status.equals("BOOKED")) {
+            status = "CANCELLED";
+        }
+    }
+
+    public void reschedule(String newTime) {
+        if (status.equals("BOOKED")) {
+            appointmentTime = newTime;
+        }
     }
 
     public void displayAppointment() {
@@ -119,28 +136,20 @@ class Appointment {
 
 public class HospitalAppointmentScheduler {
 
+    private static final ArrayList<Appointment> appointments =
+            new ArrayList<>();
+
+    private static int nextAppointmentId = 1001;
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
 
-        Patient patient = null;
-        Doctor doctor = null;
-        Appointment appointment = null;
-
-        int appointmentId = 1001;
         int choice;
 
         do {
 
-            System.out.println();
-            System.out.println("========================================");
-            System.out.println("   HOSPITAL APPOINTMENT SCHEDULER");
-            System.out.println("========================================");
-            System.out.println("1. Book Appointment");
-            System.out.println("2. View Appointment");
-            System.out.println("3. Cancel Appointment");
-            System.out.println("4. Exit");
-            System.out.println("========================================");
+            displayMenu();
 
             System.out.print("Enter your choice: ");
             choice = sc.nextInt();
@@ -149,150 +158,290 @@ public class HospitalAppointmentScheduler {
             switch (choice) {
 
                 case 1:
-
-                    System.out.print("Enter patient ID: ");
-                    int patientId = sc.nextInt();
-                    sc.nextLine();
-
-                    System.out.print("Enter patient name: ");
-                    String patientName = sc.nextLine();
-
-                    System.out.print("Enter patient age: ");
-                    int patientAge = sc.nextInt();
-                    sc.nextLine();
-
-                    System.out.print("Enter doctor ID: ");
-                    int doctorId = sc.nextInt();
-                    sc.nextLine();
-
-                    System.out.print("Enter doctor name: ");
-                    String doctorName = sc.nextLine();
-
-                    System.out.print("Enter specialization: ");
-                    String specialization = sc.nextLine();
-
-                    System.out.print("Enter consultation fee: ");
-                    double consultationFee = sc.nextDouble();
-                    sc.nextLine();
-
-                    System.out.print("Enter appointment time: ");
-                    String appointmentTime = sc.nextLine();
-
-                    if (patientId <= 0) {
-
-                        System.out.println("Invalid patient ID.");
-
-                    } else if (patientName.trim().isEmpty()) {
-
-                        System.out.println("Patient name cannot be empty.");
-
-                    } else if (patientAge <= 0) {
-
-                        System.out.println("Invalid patient age.");
-
-                    } else if (doctorId <= 0) {
-
-                        System.out.println("Invalid doctor ID.");
-
-                    } else if (doctorName.trim().isEmpty()) {
-
-                        System.out.println("Doctor name cannot be empty.");
-
-                    } else if (specialization.trim().isEmpty()) {
-
-                        System.out.println("Specialization cannot be empty.");
-
-                    } else if (consultationFee <= 0) {
-
-                        System.out.println("Invalid consultation fee.");
-
-                    } else if (appointmentTime.trim().isEmpty()) {
-
-                        System.out.println("Appointment time cannot be empty.");
-
-                    } else {
-
-                        patient = new Patient(
-                                patientId,
-                                patientName,
-                                patientAge
-                        );
-
-                        doctor = new Doctor(
-                                doctorId,
-                                doctorName,
-                                specialization,
-                                consultationFee
-                        );
-
-                        appointment = new Appointment(
-                                appointmentId,
-                                patient,
-                                doctor,
-                                appointmentTime
-                        );
-
-                        System.out.println();
-                        System.out.println(
-                                "Appointment booked successfully!"
-                        );
-
-                        System.out.println(
-                                "Appointment ID: " + appointmentId
-                        );
-
-                        appointmentId++;
-                    }
-
+                    bookAppointment(sc);
                     break;
 
                 case 2:
-
-                    if (appointment == null) {
-
-                        System.out.println("No appointment found.");
-
-                    } else {
-
-                        appointment.displayAppointment();
-                    }
-
+                    viewAllAppointments();
                     break;
 
                 case 3:
-
-                    if (appointment == null) {
-
-                        System.out.println("No appointment found.");
-
-                    } else {
-
-                        appointment.cancelAppointment();
-
-                        System.out.println(
-                                "Appointment cancelled successfully."
-                        );
-                    }
-
+                    searchAppointment(sc);
                     break;
 
                 case 4:
+                    rescheduleAppointment(sc);
+                    break;
 
+                case 5:
+                    cancelAppointment(sc);
+                    break;
+
+                case 6:
+                    displaySummary();
+                    break;
+
+                case 7:
+                    System.out.println();
                     System.out.println(
-                            "Thank you for using the system."
+                            "Thank you for using the Hospital Appointment Scheduler."
                     );
-
+                    System.out.println("Goodbye!");
                     break;
 
                 default:
-
+                    System.out.println();
                     System.out.println(
                             "Invalid choice. Please try again."
                     );
             }
 
-        } while (choice != 4);
+        } while (choice != 7);
 
         sc.close();
+    }
+
+    private static void displayMenu() {
+
+        System.out.println();
+        System.out.println("========================================");
+        System.out.println("   HOSPITAL APPOINTMENT SCHEDULER");
+        System.out.println("========================================");
+        System.out.println("1. Book Appointment");
+        System.out.println("2. View All Appointments");
+        System.out.println("3. Search Appointment");
+        System.out.println("4. Reschedule Appointment");
+        System.out.println("5. Cancel Appointment");
+        System.out.println("6. Appointment Summary");
+        System.out.println("7. Exit");
+        System.out.println("========================================");
+    }
+
+    private static void bookAppointment(Scanner sc) {
+
+        System.out.println();
+        System.out.println("========== BOOK APPOINTMENT ==========");
+
+        System.out.print("Enter patient ID: ");
+        int patientId = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Enter patient name: ");
+        String patientName = sc.nextLine();
+
+        System.out.print("Enter patient age: ");
+        int patientAge = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Enter doctor ID: ");
+        int doctorId = sc.nextInt();
+        sc.nextLine();
+
+        System.out.print("Enter doctor name: ");
+        String doctorName = sc.nextLine();
+
+        System.out.print("Enter specialization: ");
+        String specialization = sc.nextLine();
+
+        System.out.print("Enter consultation fee: ");
+        double consultationFee = sc.nextDouble();
+        sc.nextLine();
+
+        System.out.print("Enter appointment time: ");
+        String appointmentTime = sc.nextLine();
+
+        if (patientId <= 0) {
+            System.out.println("Invalid patient ID.");
+            return;
+        }
+
+        if (patientName.trim().isEmpty()) {
+            System.out.println("Patient name cannot be empty.");
+            return;
+        }
+
+        if (patientAge <= 0) {
+            System.out.println("Invalid patient age.");
+            return;
+        }
+
+        if (doctorId <= 0) {
+            System.out.println("Invalid doctor ID.");
+            return;
+        }
+
+        if (doctorName.trim().isEmpty()) {
+            System.out.println("Doctor name cannot be empty.");
+            return;
+        }
+
+        if (specialization.trim().isEmpty()) {
+            System.out.println("Specialization cannot be empty.");
+            return;
+        }
+
+        if (consultationFee <= 0) {
+            System.out.println("Invalid consultation fee.");
+            return;
+        }
+
+        if (appointmentTime.trim().isEmpty()) {
+            System.out.println("Appointment time cannot be empty.");
+            return;
+        }
+
+        Patient patient = new Patient(
+                patientId,
+                patientName,
+                patientAge
+        );
+
+        Doctor doctor = new Doctor(
+                doctorId,
+                doctorName,
+                specialization,
+                consultationFee
+        );
+
+        Appointment appointment = new Appointment(
+                nextAppointmentId,
+                patient,
+                doctor,
+                appointmentTime
+        );
+
+        appointments.add(appointment);
+
+        System.out.println();
+        System.out.println("Appointment booked successfully!");
+        System.out.println("Appointment ID: " + nextAppointmentId);
+
+        nextAppointmentId++;
+    }
+
+    private static void viewAllAppointments() {
+
+        if (appointments.isEmpty()) {
+            System.out.println();
+            System.out.println("No appointments found.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("========== ALL APPOINTMENTS ==========");
+
+        for (Appointment appointment : appointments) {
+            appointment.displayAppointment();
+        }
+    }
+
+    private static void searchAppointment(Scanner sc) {
+
+        System.out.print("Enter appointment ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getAppointmentId() == id) {
+
+                appointment.displayAppointment();
+                return;
+            }
+        }
+
+        System.out.println("Appointment not found.");
+    }
+
+    private static void rescheduleAppointment(Scanner sc) {
+
+        System.out.print("Enter appointment ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getAppointmentId() == id) {
+
+                if (appointment.getStatus().equals("CANCELLED")) {
+                    System.out.println(
+                            "Cancelled appointments cannot be rescheduled."
+                    );
+                    return;
+                }
+
+                System.out.print("Enter new appointment time: ");
+                String newTime = sc.nextLine();
+
+                if (newTime.trim().isEmpty()) {
+                    System.out.println("Appointment time cannot be empty.");
+                    return;
+                }
+
+                appointment.reschedule(newTime);
+
+                System.out.println(
+                        "Appointment rescheduled successfully."
+                );
+
+                return;
+            }
+        }
+
+        System.out.println("Appointment not found.");
+    }
+
+    private static void cancelAppointment(Scanner sc) {
+
+        System.out.print("Enter appointment ID: ");
+        int id = sc.nextInt();
+        sc.nextLine();
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getAppointmentId() == id) {
+
+                if (appointment.getStatus().equals("CANCELLED")) {
+                    System.out.println(
+                            "Appointment is already cancelled."
+                    );
+                    return;
+                }
+
+                appointment.cancelAppointment();
+
+                System.out.println(
+                        "Appointment cancelled successfully."
+                );
+
+                return;
+            }
+        }
+
+        System.out.println("Appointment not found.");
+    }
+
+    private static void displaySummary() {
+
+        int booked = 0;
+        int cancelled = 0;
+
+        for (Appointment appointment : appointments) {
+
+            if (appointment.getStatus().equals("BOOKED")) {
+                booked++;
+            } else if (appointment.getStatus().equals("CANCELLED")) {
+                cancelled++;
+            }
+        }
+
+        System.out.println();
+        System.out.println("========================================");
+        System.out.println("       APPOINTMENT SUMMARY");
+        System.out.println("========================================");
+        System.out.println("Total Appointments : " + appointments.size());
+        System.out.println("Booked             : " + booked);
+        System.out.println("Cancelled          : " + cancelled);
+        System.out.println("========================================");
     }
 }
