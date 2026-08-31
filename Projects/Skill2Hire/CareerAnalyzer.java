@@ -1,109 +1,70 @@
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-/**
- * Compares a student's skills with the skills required for a career role.
- */
+/** Compares a student's skills with one or more technology career paths. */
 public class CareerAnalyzer {
-    private final String targetRole;
-    private final ArrayList<String> requiredSkills;
-    private final LinkedHashMap<String, ArrayList<String>> skillCategories;
+    private final Career career;
 
-    public CareerAnalyzer(String targetRole) {
-        this.targetRole = targetRole;
-        this.requiredSkills = new ArrayList<>();
-        this.skillCategories = new LinkedHashMap<>();
-        addJavaFullStackDeveloperSkills();
-    }
+    /** Retained for V2 compatibility; uses Java Full Stack Developer. */
+    public CareerAnalyzer(String targetRole) { this(new CareerRepository().getJavaFullStackDeveloper()); }
+    public CareerAnalyzer(Career career) { this.career = career; }
 
-    private void addJavaFullStackDeveloperSkills() {
-        requiredSkills.add("Java");
-        requiredSkills.add("HTML");
-        requiredSkills.add("CSS");
-        requiredSkills.add("JavaScript");
-        requiredSkills.add("SQL");
-        requiredSkills.add("Spring Boot");
-        requiredSkills.add("REST API");
-        requiredSkills.add("Git");
-        addCategory("Frontend", "HTML", "CSS", "JavaScript");
-        addCategory("Backend", "Java", "Spring Boot", "REST API");
-        addCategory("Database", "SQL");
-        addCategory("Tools", "Git");
-    }
+    public String getTargetRole() { return career.getName(); }
+    public ArrayList<String> getRequiredSkills() { return career.getRequiredSkills(); }
+    public LinkedHashMap<String, ArrayList<String>> getSkillCategories() { return career.getSkillCategories(); }
 
-    private void addCategory(String name, String... skills) {
-        ArrayList<String> categorySkills = new ArrayList<>();
-        for (String skill : skills) categorySkills.add(skill);
-        skillCategories.put(name, categorySkills);
-    }
-
-    public String getTargetRole() {
-        return targetRole;
-    }
-
-    public ArrayList<String> getRequiredSkills() {
-        return requiredSkills;
-    }
-
-    public LinkedHashMap<String, ArrayList<String>> getSkillCategories() { return skillCategories; }
-
-    /** Returns required skills that the student entered, ignoring letter case. */
     public ArrayList<String> getMatchedSkills(Student student) {
-        ArrayList<String> matchedSkills = new ArrayList<>();
-
-        for (String requiredSkill : requiredSkills) {
-            if (findSkill(student, requiredSkill) != null) {
-                matchedSkills.add(requiredSkill);
-            }
-        }
-        return matchedSkills;
+        ArrayList<String> matched = new ArrayList<>();
+        for (String required : career.getRequiredSkills()) if (findSkill(student, required) != null) matched.add(required);
+        return matched;
     }
 
-    /** Returns required skills that are not currently listed by the student. */
     public ArrayList<String> getMissingSkills(Student student) {
-        ArrayList<String> missingSkills = new ArrayList<>();
-
-        for (String requiredSkill : requiredSkills) {
-            if (findSkill(student, requiredSkill) == null) {
-                missingSkills.add(requiredSkill);
-            }
-        }
-        return missingSkills;
+        ArrayList<String> missing = new ArrayList<>();
+        for (String required : career.getRequiredSkills()) if (findSkill(student, required) == null) missing.add(required);
+        return missing;
     }
 
     public double calculateReadinessScore(Student student) {
-        return (getMatchedSkills(student).size() * 100.0) / requiredSkills.size();
+        return getMatchedSkills(student).size() * 100.0 / career.getRequiredSkills().size();
     }
 
-    /** Calculates readiness using 40%, 70%, or 100% per matched skill. */
     public double calculateWeightedReadinessScore(Student student) {
-        double totalContribution = 0;
-        for (String requiredSkill : requiredSkills) {
-            Skill skill = findSkill(student, requiredSkill);
-            if (skill != null) totalContribution += skill.getProficiency().getContribution();
+        double contribution = 0;
+        for (String required : career.getRequiredSkills()) {
+            Skill skill = findSkill(student, required);
+            if (skill != null) contribution += skill.getProficiency().getContribution();
         }
-        return totalContribution / requiredSkills.size();
+        return contribution / career.getRequiredSkills().size();
     }
 
-    /** Returns basic readiness percentages for every category in display order. */
+    /** Retained V2 category analysis for careers that define categories. */
     public LinkedHashMap<String, Double> getCategoryReadiness(Student student) {
-        LinkedHashMap<String, Double> result = new LinkedHashMap<>();
-        for (Map.Entry<String, ArrayList<String>> category : skillCategories.entrySet()) {
-            int matchedCount = 0;
-            for (String requiredSkill : category.getValue()) {
-                if (findSkill(student, requiredSkill) != null) matchedCount++;
-            }
-            result.put(category.getKey(), matchedCount * 100.0 / category.getValue().size());
+        LinkedHashMap<String, Double> readiness = new LinkedHashMap<>();
+        for (Map.Entry<String, ArrayList<String>> category : career.getSkillCategories().entrySet()) {
+            int matched = 0;
+            for (String required : category.getValue()) if (findSkill(student, required) != null) matched++;
+            readiness.put(category.getKey(), matched * 100.0 / category.getValue().size());
         }
-        return result;
+        return readiness;
     }
 
-    /** Returns a matching student skill, or null when it is absent. */
+    public CareerMatch analyzeCareer(Student student) {
+        return new CareerMatch(career, getMatchedSkills(student), getMissingSkills(student), calculateReadinessScore(student), calculateWeightedReadinessScore(student));
+    }
+
+    public static ArrayList<CareerMatch> rankCareers(Student student, ArrayList<Career> careers) {
+        ArrayList<CareerMatch> matches = new ArrayList<>();
+        for (Career career : careers) matches.add(new CareerAnalyzer(career).analyzeCareer(student));
+        matches.sort(Comparator.comparingDouble(CareerMatch::getWeightedMatchPercentage).reversed());
+        return matches;
+    }
+
+    /** Returns a student skill matching the required name, ignoring letter case. */
     public Skill findSkill(Student student, String requiredSkill) {
-        for (Skill studentSkill : student.getSkills()) {
-            if (studentSkill.getName().equalsIgnoreCase(requiredSkill)) return studentSkill;
-        }
+        for (Skill skill : student.getSkills()) if (skill.getName().equalsIgnoreCase(requiredSkill)) return skill;
         return null;
     }
 }

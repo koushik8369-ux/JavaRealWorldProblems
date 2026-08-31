@@ -1,30 +1,42 @@
-# Skill2Hire — Version 2
+# Skill2Hire — Version 3
 
-A beginner-friendly Java console application that compares a student's skills with the skills required for the **Java Full Stack Developer** role.
+Skill2Hire is a Java console Career Intelligence application. It evaluates a student's skills and proficiency levels across several technology careers, ranks the matches, and recommends the strongest fit.
 
-## Run the application
+## Supported career paths
 
-From this project folder, compile and run:
+- Java Full Stack Developer
+- Frontend Developer
+- Backend Developer
+- Data Analyst
+
+## Version 1 features
+
+- Student name and skill-count validation
+- Case-insensitive skill comparison with matched and missing skill reporting
+- Basic readiness percentage
+
+## Version 2 features
+
+- Beginner, Intermediate, and Advanced proficiency levels
+- Weighted scoring: 40%, 70%, and 100% skill contributions
+- Java Full Stack category analysis: Frontend, Backend, Database, and Tools
+
+## Version 3 features
+
+- Reusable career database using `Career`, `CareerRepository`, and `CareerMatch`
+- Multi-career analysis from one student profile
+- Weighted career ranking and best-career recommendation
+- Comparison reports with matched skills, missing skills, basic score, and weighted score
+- Smart guidance and the top missing skills for the recommended career
+- Retained Java Full Stack detailed category and proficiency report
+
+## Compile and run
 
 ```powershell
-javac Student.java Skill.java CareerAnalyzer.java Skill2Hire.java
+javac *.java
 java Skill2Hire
 ```
 
-## Version 1 features retained
+## Example usage
 
-- Student name validation
-- A single supported career role: Java Full Stack Developer
-- Skill entry using `ArrayList`
-- Case-insensitive skill matching
-- Matched and missing skills report
-- Career Readiness Score
-
-## New in Version 2
-
-- Skill proficiency collection: Beginner, Intermediate, or Advanced
-- Weighted readiness: Beginner = 40%, Intermediate = 70%, Advanced = 100%
-- Frontend, Backend, Database, and Tools category analysis
-- Category readiness percentages and skill proficiency details
-- Personalized recommendations for weak categories and beginner-level skills
-- A dedicated `Skill` class for clean, encapsulated skill data
+Enter `Java` at Intermediate, `HTML` at Advanced, `SQL` at Intermediate, and `Git` at Advanced. The application ranks all four careers, recommends the best match, and provides a detailed Java Full Stack analysis.
