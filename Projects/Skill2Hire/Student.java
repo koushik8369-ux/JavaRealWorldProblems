@@ -5,7 +5,7 @@ import java.util.ArrayList;
  */
 public class Student {
     private final String name;
-    private final ArrayList<String> skills;
+    private final ArrayList<Skill> skills;
 
     public Student(String name) {
         this.name = name;
@@ -16,12 +16,12 @@ public class Student {
         return name;
     }
 
-    public ArrayList<String> getSkills() {
+    public ArrayList<Skill> getSkills() {
         return skills;
     }
 
-    /** Adds a skill after removing leading and trailing spaces. */
-    public void addSkill(String skill) {
-        skills.add(skill.trim());
+    /** Adds a skill and its proficiency level. */
+    public void addSkill(String skillName, Skill.ProficiencyLevel proficiency) {
+        skills.add(new Skill(skillName, proficiency));
     }
 }
