@@ -1,11 +1,13 @@
-# Bike Fuel Cost Calculator
+# Bike Fuel Cost Calculator V2
 
-A simple Java console program that calculates the fuel required and total petrol cost for a bike trip.
+A simple Java console program that calculates the fuel required and total petrol cost for a round-trip bike journey, then checks the cost against a fuel budget.
 
 ## Formulas
 
-- Fuel Required = Distance / Mileage
+- Total Distance = One-Way Distance * 2
+- Fuel Required = Total Distance / Mileage
 - Total Fuel Cost = Fuel Required * Petrol Price
+- Average Distance Per Day = Total Distance / Trip Duration
 
 ## Run
 
@@ -14,4 +16,6 @@ javac BikeFuelCostCalculator.java
 java BikeFuelCostCalculator
 ```
 
-For the example values `450`, `35`, and `100`, the program displays `12.86 litres` and `₹1285.71`.
+The program asks for the one-way distance, bike mileage, petrol price, trip duration, and fuel budget. It displays a complete trip summary and reports whether the calculated fuel cost is within the budget.
+
+Version 1 calculated basic fuel and cost. Version 2 adds round-trip planning and budget analysis.
