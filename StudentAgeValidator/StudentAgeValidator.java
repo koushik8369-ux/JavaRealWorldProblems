@@ -8,29 +8,40 @@ public class StudentAgeValidator {
 
         System.out.println("=== Student Registration Validator ===");
 
-        System.out.print("Enter student name: ");
+        System.out.print("Enter Student Name: ");
         String name = scanner.nextLine();
 
-        System.out.print("Enter student age: ");
+        System.out.print("Enter Student ID: ");
+        String studentId = scanner.nextLine();
+
+        System.out.print("Enter Course Name: ");
+        String course = scanner.nextLine();
+
+        System.out.print("Enter Student Age: ");
         String ageInput = scanner.nextLine();
 
-        // Convert String to int using Wrapper Class
+        // String to int using Wrapper Class
         int age = Integer.parseInt(ageInput);
 
-        System.out.println("\n=== Registration Summary ===");
-        System.out.println("Student Name: " + name);
-        System.out.println("Student Age: " + age);
+        boolean validAge = age >= 0 && age <= 100;
+        boolean eligibleForRegistration = age >= 18;
+        boolean eligibleForVoting = age >= 18;
 
-        // Age validation and eligibility
-        if (age < 0 || age > 100) {
-            System.out.println("Status: Invalid Age");
-        } else if (age < 18) {
-            System.out.println("Status: Not Eligible for Registration");
-        } else if (age <= 25) {
-            System.out.println("Status: Eligible for Registration");
+        System.out.println("\n=== Student Registration Summary ===");
+        System.out.println("Name: " + name);
+        System.out.println("Student ID: " + studentId);
+        System.out.println("Course: " + course);
+        System.out.println("Age: " + age);
+
+        if (!validAge) {
+            System.out.println("Registration Status: Invalid Age");
+        } else if (!eligibleForRegistration) {
+            System.out.println("Registration Status: Not Eligible");
         } else {
-            System.out.println("Status: Requires Special Eligibility Review");
+            System.out.println("Registration Status: Eligible");
         }
+
+        System.out.println("Voting Eligibility: " + eligibleForVoting);
 
         scanner.close();
     }
