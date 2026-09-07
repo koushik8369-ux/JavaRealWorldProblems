@@ -1,6 +1,10 @@
+import java.util.Scanner;
+
 public class LargestNumber {
 
     public static void main(String[] args) {
+
+        Scanner scanner = new Scanner(System.in);
 
         int[] numbers = {12, 45, 7, 89, 34};
 
@@ -31,7 +35,21 @@ public class LargestNumber {
 
         double average = (double) sum / numbers.length;
 
-        System.out.println("=== Array Analysis V3 ===");
+        System.out.print("Enter a number to search: ");
+        int searchNumber = scanner.nextInt();
+
+        boolean found = false;
+        int position = -1;
+
+        for (int i = 0; i < numbers.length; i++) {
+            if (numbers[i] == searchNumber) {
+                found = true;
+                position = i;
+                break;
+            }
+        }
+
+        System.out.println("\n=== Array Analysis V4 ===");
         System.out.println("Total Elements = " + numbers.length);
         System.out.println("Sum = " + sum);
         System.out.println("Largest Number = " + largest);
@@ -39,5 +57,13 @@ public class LargestNumber {
         System.out.println("Average = " + average);
         System.out.println("Even Numbers Count = " + evenCount);
         System.out.println("Odd Numbers Count = " + oddCount);
+
+        if (found) {
+            System.out.println("Number found at index: " + position);
+        } else {
+            System.out.println("Number not found in the array.");
+        }
+
+        scanner.close();
     }
 }
