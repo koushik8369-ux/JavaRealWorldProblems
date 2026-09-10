@@ -2,11 +2,14 @@ public class StudentMarksAnalyzer {
 
     public static void main(String[] args) {
 
-        int[] marks = { 78, 85, 67, 92, 74 };
+        int[] marks = { 78, 85, 32, 92, 74 };
 
         int total = 0;
         int highest = marks[0];
         int lowest = marks[0];
+
+        int passedSubjects = 0;
+        int failedSubjects = 0;
 
         System.out.print("Marks: ");
 
@@ -23,15 +26,29 @@ public class StudentMarksAnalyzer {
             if (marks[i] < lowest) {
                 lowest = marks[i];
             }
+
+            if (marks[i] >= 35) {
+                passedSubjects++;
+            } else {
+                failedSubjects++;
+            }
         }
 
         double average = (double) total / marks.length;
 
         System.out.println();
-
+        System.out.println("----------------------");
         System.out.println("Total: " + total);
         System.out.println("Average: " + average);
         System.out.println("Highest: " + highest);
         System.out.println("Lowest: " + lowest);
+        System.out.println("Passed Subjects: " + passedSubjects);
+        System.out.println("Failed Subjects: " + failedSubjects);
+
+        if (failedSubjects > 0) {
+            System.out.println("Overall Result: FAIL");
+        } else {
+            System.out.println("Overall Result: PASS");
+        }
     }
 }
