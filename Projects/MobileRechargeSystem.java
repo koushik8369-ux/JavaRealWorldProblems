@@ -37,27 +37,65 @@ public class MobileRechargeSystem {
                 case 1:
 
                     System.out.println();
-                    System.out.println("Current Wallet Balance: ₹" + walletBalance);
+                    System.out.println(
+                            "Current Wallet Balance: ₹" + walletBalance);
+
                     break;
 
                 case 2:
 
                     System.out.println();
-                    System.out.print("Enter Recharge Amount: ");
-                    double rechargeAmount = sc.nextDouble();
+                    System.out.println("===== RECHARGE PLANS =====");
+                    System.out.println("1. ₹199 - 1.5GB/day - 28 Days");
+                    System.out.println("2. ₹299 - 2GB/day - 28 Days");
+                    System.out.println("3. ₹349 - 2.5GB/day - 28 Days");
+                    System.out.println("4. ₹499 - 2GB/day - 56 Days");
+                    System.out.println("5. Back");
+
+                    System.out.print("Select a plan: ");
+                    int planChoice = sc.nextInt();
+
+                    double rechargeAmount = 0;
+                    String planDetails = "";
+
+                    switch (planChoice) {
+
+                        case 1:
+                            rechargeAmount = 199;
+                            planDetails = "₹199 - 1.5GB/day - 28 Days";
+                            break;
+
+                        case 2:
+                            rechargeAmount = 299;
+                            planDetails = "₹299 - 2GB/day - 28 Days";
+                            break;
+
+                        case 3:
+                            rechargeAmount = 349;
+                            planDetails = "₹349 - 2.5GB/day - 28 Days";
+                            break;
+
+                        case 4:
+                            rechargeAmount = 499;
+                            planDetails = "₹499 - 2GB/day - 56 Days";
+                            break;
+
+                        case 5:
+                            System.out.println("Returning to main menu...");
+                            continue;
+
+                        default:
+                            System.out.println("Invalid Plan Choice!");
+                            continue;
+                    }
 
                     String transactionId = "TXN" + transactionNumber;
                     transactionNumber++;
 
-                    if (rechargeAmount <= 0) {
+                    System.out.println();
+                    System.out.println("Selected Plan: " + planDetails);
 
-                        System.out.println("Transaction ID: " + transactionId);
-                        System.out.println("Status: FAILED");
-                        System.out.println("Reason: Invalid Recharge Amount");
-
-                        failedTransactions++;
-
-                    } else if (rechargeAmount > walletBalance) {
+                    if (rechargeAmount > walletBalance) {
 
                         System.out.println("Transaction ID: " + transactionId);
                         System.out.println("Status: FAILED");
@@ -68,17 +106,21 @@ public class MobileRechargeSystem {
                     } else {
 
                         walletBalance = walletBalance - rechargeAmount;
+
                         totalRechargeAmount =
                                 totalRechargeAmount + rechargeAmount;
 
                         successfulTransactions++;
 
+                        System.out.println();
+                        System.out.println("===== RECHARGE SUCCESSFUL =====");
                         System.out.println("Transaction ID: " + transactionId);
-                        System.out.println("Status: SUCCESS");
-                        System.out.println(
-                                "Recharge Amount: ₹" + rechargeAmount);
+                        System.out.println("Mobile Number: " + mobileNumber);
+                        System.out.println("Plan: " + planDetails);
+                        System.out.println("Amount: ₹" + rechargeAmount);
                         System.out.println(
                                 "Remaining Balance: ₹" + walletBalance);
+                        System.out.println("================================");
                     }
 
                     break;
@@ -109,6 +151,7 @@ public class MobileRechargeSystem {
                     System.out.println();
                     System.out.println(
                             "Thank you for using Mobile Recharge System!");
+
                     sc.close();
                     return;
 
