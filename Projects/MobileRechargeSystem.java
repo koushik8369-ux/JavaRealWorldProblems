@@ -8,68 +8,114 @@ public class MobileRechargeSystem {
 
         Scanner sc = new Scanner(System.in);
 
-        System.out.println("===== MOBILE RECHARGE SYSTEM =====");
+        System.out.println("===== MOBILE WALLET =====");
 
         System.out.print("Enter Mobile Number: ");
         String mobileNumber = sc.nextLine();
 
-        System.out.print("Enter Wallet Balance: ");
+        System.out.print("Enter Initial Wallet Balance: ");
         double walletBalance = sc.nextDouble();
-
-        System.out.print("Enter Number of Transactions: ");
-        int numberOfTransactions = sc.nextInt();
 
         int successfulTransactions = 0;
         int failedTransactions = 0;
+        double totalRechargeAmount = 0;
 
-        for (int i = 1; i <= numberOfTransactions; i++) {
+        while (true) {
 
             System.out.println();
-            System.out.println("----- Transaction " + i + " -----");
+            System.out.println("===== MOBILE WALLET =====");
+            System.out.println("1. Check Balance");
+            System.out.println("2. Recharge Mobile");
+            System.out.println("3. Transaction Summary");
+            System.out.println("4. Exit");
+            System.out.print("Enter your choice: ");
 
-            System.out.print("Enter Recharge Amount: ");
-            double rechargeAmount = sc.nextDouble();
+            int choice = sc.nextInt();
 
-            String transactionId = "TXN" + transactionNumber;
-            transactionNumber++;
+            switch (choice) {
 
-            if (rechargeAmount <= 0) {
+                case 1:
 
-                System.out.println("Transaction ID: " + transactionId);
-                System.out.println("Status: FAILED");
-                System.out.println("Reason: Invalid Recharge Amount");
+                    System.out.println();
+                    System.out.println("Current Wallet Balance: ₹" + walletBalance);
+                    break;
 
-                failedTransactions++;
+                case 2:
 
-            } else if (rechargeAmount > walletBalance) {
+                    System.out.println();
+                    System.out.print("Enter Recharge Amount: ");
+                    double rechargeAmount = sc.nextDouble();
 
-                System.out.println("Transaction ID: " + transactionId);
-                System.out.println("Status: FAILED");
-                System.out.println("Reason: Insufficient Wallet Balance");
+                    String transactionId = "TXN" + transactionNumber;
+                    transactionNumber++;
 
-                failedTransactions++;
+                    if (rechargeAmount <= 0) {
 
-            } else {
+                        System.out.println("Transaction ID: " + transactionId);
+                        System.out.println("Status: FAILED");
+                        System.out.println("Reason: Invalid Recharge Amount");
 
-                walletBalance = walletBalance - rechargeAmount;
+                        failedTransactions++;
 
-                System.out.println("Transaction ID: " + transactionId);
-                System.out.println("Status: SUCCESS");
-                System.out.println("Recharge Amount: ₹" + rechargeAmount);
-                System.out.println("Remaining Balance: ₹" + walletBalance);
+                    } else if (rechargeAmount > walletBalance) {
 
-                successfulTransactions++;
+                        System.out.println("Transaction ID: " + transactionId);
+                        System.out.println("Status: FAILED");
+                        System.out.println("Reason: Insufficient Wallet Balance");
+
+                        failedTransactions++;
+
+                    } else {
+
+                        walletBalance = walletBalance - rechargeAmount;
+                        totalRechargeAmount =
+                                totalRechargeAmount + rechargeAmount;
+
+                        successfulTransactions++;
+
+                        System.out.println("Transaction ID: " + transactionId);
+                        System.out.println("Status: SUCCESS");
+                        System.out.println(
+                                "Recharge Amount: ₹" + rechargeAmount);
+                        System.out.println(
+                                "Remaining Balance: ₹" + walletBalance);
+                    }
+
+                    break;
+
+                case 3:
+
+                    System.out.println();
+                    System.out.println("========== TRANSACTION SUMMARY ==========");
+                    System.out.println("Mobile Number: " + mobileNumber);
+                    System.out.println(
+                            "Successful Transactions: "
+                                    + successfulTransactions);
+                    System.out.println(
+                            "Failed Transactions: "
+                                    + failedTransactions);
+                    System.out.println(
+                            "Total Amount Recharged: ₹"
+                                    + totalRechargeAmount);
+                    System.out.println(
+                            "Current Wallet Balance: ₹"
+                                    + walletBalance);
+                    System.out.println("==========================================");
+
+                    break;
+
+                case 4:
+
+                    System.out.println();
+                    System.out.println(
+                            "Thank you for using Mobile Recharge System!");
+                    sc.close();
+                    return;
+
+                default:
+
+                    System.out.println("Invalid Choice!");
             }
         }
-
-        System.out.println();
-        System.out.println("========== SUMMARY ==========");
-        System.out.println("Mobile Number: " + mobileNumber);
-        System.out.println("Successful Transactions: " + successfulTransactions);
-        System.out.println("Failed Transactions: " + failedTransactions);
-        System.out.println("Final Wallet Balance: ₹" + walletBalance);
-        System.out.println("==============================");
-
-        sc.close();
     }
 }
