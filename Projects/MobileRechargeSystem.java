@@ -16,46 +16,59 @@ public class MobileRechargeSystem {
         System.out.print("Enter Wallet Balance: ");
         double walletBalance = sc.nextDouble();
 
-        System.out.print("Enter Recharge Amount: ");
-        double rechargeAmount = sc.nextDouble();
+        System.out.print("Enter Number of Transactions: ");
+        int numberOfTransactions = sc.nextInt();
 
-        String transactionId = "TXN" + transactionNumber;
-        transactionNumber++;
+        int successfulTransactions = 0;
+        int failedTransactions = 0;
+
+        for (int i = 1; i <= numberOfTransactions; i++) {
+
+            System.out.println();
+            System.out.println("----- Transaction " + i + " -----");
+
+            System.out.print("Enter Recharge Amount: ");
+            double rechargeAmount = sc.nextDouble();
+
+            String transactionId = "TXN" + transactionNumber;
+            transactionNumber++;
+
+            if (rechargeAmount <= 0) {
+
+                System.out.println("Transaction ID: " + transactionId);
+                System.out.println("Status: FAILED");
+                System.out.println("Reason: Invalid Recharge Amount");
+
+                failedTransactions++;
+
+            } else if (rechargeAmount > walletBalance) {
+
+                System.out.println("Transaction ID: " + transactionId);
+                System.out.println("Status: FAILED");
+                System.out.println("Reason: Insufficient Wallet Balance");
+
+                failedTransactions++;
+
+            } else {
+
+                walletBalance = walletBalance - rechargeAmount;
+
+                System.out.println("Transaction ID: " + transactionId);
+                System.out.println("Status: SUCCESS");
+                System.out.println("Recharge Amount: ₹" + rechargeAmount);
+                System.out.println("Remaining Balance: ₹" + walletBalance);
+
+                successfulTransactions++;
+            }
+        }
 
         System.out.println();
-
-        if (rechargeAmount <= 0) {
-
-            System.out.println("========== TRANSACTION RECEIPT ==========");
-            System.out.println("Transaction ID: " + transactionId);
-            System.out.println("Mobile Number: " + mobileNumber);
-            System.out.println("Recharge Amount: ₹" + rechargeAmount);
-            System.out.println("Status: FAILED");
-            System.out.println("Reason: Invalid Recharge Amount");
-            System.out.println("=========================================");
-
-        } else if (rechargeAmount > walletBalance) {
-
-            System.out.println("========== TRANSACTION RECEIPT ==========");
-            System.out.println("Transaction ID: " + transactionId);
-            System.out.println("Mobile Number: " + mobileNumber);
-            System.out.println("Recharge Amount: ₹" + rechargeAmount);
-            System.out.println("Status: FAILED");
-            System.out.println("Reason: Insufficient Wallet Balance");
-            System.out.println("=========================================");
-
-        } else {
-
-            walletBalance = walletBalance - rechargeAmount;
-
-            System.out.println("========== TRANSACTION RECEIPT ==========");
-            System.out.println("Transaction ID: " + transactionId);
-            System.out.println("Mobile Number: " + mobileNumber);
-            System.out.println("Recharge Amount: ₹" + rechargeAmount);
-            System.out.println("Status: SUCCESS");
-            System.out.println("Remaining Wallet Balance: ₹" + walletBalance);
-            System.out.println("=========================================");
-        }
+        System.out.println("========== SUMMARY ==========");
+        System.out.println("Mobile Number: " + mobileNumber);
+        System.out.println("Successful Transactions: " + successfulTransactions);
+        System.out.println("Failed Transactions: " + failedTransactions);
+        System.out.println("Final Wallet Balance: ₹" + walletBalance);
+        System.out.println("==============================");
 
         sc.close();
     }
