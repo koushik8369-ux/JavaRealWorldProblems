@@ -14,7 +14,8 @@ public class MovieTicketBooking {
             System.out.println("===== MOVIE TICKET BOOKING =====");
             System.out.println("1. Display Seats");
             System.out.println("2. Book Seat");
-            System.out.println("3. Exit");
+            System.out.println("3. Cancel Seat");
+            System.out.println("4. Exit");
             System.out.print("Enter your choice: ");
 
             int choice = sc.nextInt();
@@ -24,35 +25,33 @@ public class MovieTicketBooking {
                 case 1:
 
                     displaySeats(seats);
-
                     break;
 
                 case 2:
 
                     System.out.print("Enter Row (1-5): ");
-                    int row = sc.nextInt();
+                    int bookRow = sc.nextInt();
 
                     System.out.print("Enter Seat (1-6): ");
-                    int seat = sc.nextInt();
+                    int bookSeat = sc.nextInt();
 
-                    row = row - 1;
-                    seat = seat - 1;
+                    bookRow = bookRow - 1;
+                    bookSeat = bookSeat - 1;
 
-                    if (row < 0 || row >= seats.length ||
-                        seat < 0 || seat >= seats[row].length) {
+                    if (bookRow < 0 || bookRow >= seats.length ||
+                        bookSeat < 0 || bookSeat >= seats[bookRow].length) {
 
                         System.out.println("Invalid seat selection!");
 
-                    } else if (seats[row][seat] == 1) {
+                    } else if (seats[bookRow][bookSeat] == 1) {
 
                         System.out.println("Seat already booked!");
                         System.out.println("Booking failed.");
 
                     } else {
 
-                        seats[row][seat] = 1;
+                        seats[bookRow][bookSeat] = 1;
 
-                        System.out.println();
                         System.out.println("Seat booked successfully!");
                     }
 
@@ -60,13 +59,43 @@ public class MovieTicketBooking {
 
                 case 3:
 
+                    System.out.print("Enter Row (1-5): ");
+                    int cancelRow = sc.nextInt();
+
+                    System.out.print("Enter Seat (1-6): ");
+                    int cancelSeat = sc.nextInt();
+
+                    cancelRow = cancelRow - 1;
+                    cancelSeat = cancelSeat - 1;
+
+                    if (cancelRow < 0 || cancelRow >= seats.length ||
+                        cancelSeat < 0 ||
+                        cancelSeat >= seats[cancelRow].length) {
+
+                        System.out.println("Invalid seat selection!");
+
+                    } else if (seats[cancelRow][cancelSeat] == 0) {
+
+                        System.out.println("Seat is not booked!");
+                        System.out.println("Cancellation failed.");
+
+                    } else {
+
+                        seats[cancelRow][cancelSeat] = 0;
+
+                        System.out.println("Seat cancelled successfully!");
+                    }
+
+                    break;
+
+                case 4:
+
                     System.out.println();
                     System.out.println(
                             "Thank you for using Movie Ticket Booking System!"
                     );
 
                     sc.close();
-
                     return;
 
                 default:
