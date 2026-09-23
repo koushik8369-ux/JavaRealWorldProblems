@@ -4,7 +4,6 @@ public class MovieTicketBooking {
 
     static final int ROWS = 5;
     static final int SEATS = 6;
-    static final int TICKET_PRICE = 150;
 
     static int bookingCounter = 1;
     static int totalRevenue = 0;
@@ -27,8 +26,8 @@ public class MovieTicketBooking {
 
     public static String generateBookingId() {
 
-        String bookingId = String.format(
-                "B%03d", bookingCounter);
+        String bookingId =
+                String.format("B%03d", bookingCounter);
 
         bookingCounter++;
 
@@ -37,13 +36,11 @@ public class MovieTicketBooking {
 
     public static void bookSeat(
             Scanner sc,
-            int[][] seats) {
+            int[][] seats,
+            Movie movie) {
 
         System.out.print("Enter Customer Name: ");
         String customerName = sc.nextLine();
-
-        System.out.print("Enter Movie Name: ");
-        String movieName = sc.nextLine();
 
         System.out.print("Enter Row (1-5): ");
         int row = sc.nextInt();
@@ -68,17 +65,20 @@ public class MovieTicketBooking {
 
         seats[row - 1][seat - 1] = 1;
 
-        String bookingId = generateBookingId();
+        Customer customer =
+                new Customer(customerName);
 
-        totalRevenue += TICKET_PRICE;
+        String bookingId =
+                generateBookingId();
+
+        totalRevenue += movie.getTicketPrice();
 
         Booking booking = new Booking(
                 bookingId,
-                customerName,
-                movieName,
+                customer,
+                movie,
                 row,
-                seat,
-                TICKET_PRICE
+                seat
         );
 
         booking.displayBookingDetails();
@@ -86,7 +86,8 @@ public class MovieTicketBooking {
 
     public static void cancelSeat(
             Scanner sc,
-            int[][] seats) {
+            int[][] seats,
+            Movie movie) {
 
         System.out.print("Enter Row (1-5): ");
         int row = sc.nextInt();
@@ -111,24 +112,30 @@ public class MovieTicketBooking {
 
         seats[row - 1][seat - 1] = 0;
 
-        totalRevenue -= TICKET_PRICE;
+        totalRevenue -= movie.getTicketPrice();
 
         System.out.println(
                 "Booking cancelled successfully!");
 
         System.out.println(
-                "₹" + TICKET_PRICE + " refunded.");
+                "₹" + movie.getTicketPrice() +
+                " refunded.");
     }
 
-    public static void showRevenue() {
+    public static void showRevenue(Movie movie) {
 
         System.out.println("\n===== REVENUE SUMMARY =====");
 
         System.out.println(
-                "Ticket Price: ₹" + TICKET_PRICE);
+                "Movie: " + movie.getMovieName());
 
         System.out.println(
-                "Total Revenue: ₹" + totalRevenue);
+                "Ticket Price: ₹" +
+                movie.getTicketPrice());
+
+        System.out.println(
+                "Total Revenue: ₹" +
+                totalRevenue);
     }
 
     public static void main(String[] args) {
@@ -137,12 +144,22 @@ public class MovieTicketBooking {
 
         int[][] seats = new int[ROWS][SEATS];
 
+        Movie movie =
+                new Movie("Avengers", 150);
+
         while (true) {
 
             System.out.println(
                     "\n===== MOVIE TICKET BOOKING =====");
 
-            System.out.println("1. Display Seats");
+            System.out.println(
+                    "Movie: " + movie.getMovieName());
+
+            System.out.println(
+                    "Ticket Price: ₹" +
+                    movie.getTicketPrice());
+
+            System.out.println("\n1. Display Seats");
             System.out.println("2. Book Seat");
             System.out.println("3. Cancel Seat");
             System.out.println("4. Show Total Revenue");
@@ -160,15 +177,15 @@ public class MovieTicketBooking {
                     break;
 
                 case 2:
-                    bookSeat(sc, seats);
+                    bookSeat(sc, seats, movie);
                     break;
 
                 case 3:
-                    cancelSeat(sc, seats);
+                    cancelSeat(sc, seats, movie);
                     break;
 
                 case 4:
-                    showRevenue();
+                    showRevenue(movie);
                     break;
 
                 case 5:

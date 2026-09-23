@@ -1,31 +1,32 @@
 public class Booking {
 
-    String bookingId;
-    String customerName;
-    String movieName;
-    int row;
-    int seat;
-    int ticketPrice;
+    private String bookingId;
+    private Customer customer;
+    private Movie movie;
+    private int row;
+    private int seat;
 
-    public Booking(String bookingId, String customerName,
-                   String movieName, int row, int seat,
-                   int ticketPrice) {
+    public Booking(String bookingId, Customer customer,
+                   Movie movie, int row, int seat) {
 
         this.bookingId = bookingId;
-        this.customerName = customerName;
-        this.movieName = movieName;
+        this.customer = customer;
+        this.movie = movie;
         this.row = row;
         this.seat = seat;
-        this.ticketPrice = ticketPrice;
     }
 
     public void displayBookingDetails() {
 
         System.out.println("\n===== BOOKING CONFIRMED =====");
         System.out.println("Booking ID: " + bookingId);
-        System.out.println("Customer: " + customerName);
-        System.out.println("Movie: " + movieName);
-        System.out.println("Seat: Row " + row + ", Seat " + seat);
-        System.out.println("Ticket Price: ₹" + ticketPrice);
+        System.out.println("Customer: " +
+                customer.getCustomerName());
+        System.out.println("Movie: " +
+                movie.getMovieName());
+        System.out.println("Seat: Row " +
+                row + ", Seat " + seat);
+        System.out.println("Ticket Price: ₹" +
+                movie.getTicketPrice());
     }
 }
