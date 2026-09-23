@@ -25,6 +25,112 @@ public class MovieTicketBooking {
         System.out.println("0 = Available | 1 = Booked");
     }
 
+    public static String generateBookingId() {
+
+        String bookingId = String.format(
+                "B%03d", bookingCounter);
+
+        bookingCounter++;
+
+        return bookingId;
+    }
+
+    public static void bookSeat(
+            Scanner sc,
+            int[][] seats) {
+
+        System.out.print("Enter Customer Name: ");
+        String customerName = sc.nextLine();
+
+        System.out.print("Enter Movie Name: ");
+        String movieName = sc.nextLine();
+
+        System.out.print("Enter Row (1-5): ");
+        int row = sc.nextInt();
+
+        System.out.print("Enter Seat (1-6): ");
+        int seat = sc.nextInt();
+
+        sc.nextLine();
+
+        if (row < 1 || row > ROWS ||
+            seat < 1 || seat > SEATS) {
+
+            System.out.println("Invalid row or seat!");
+            return;
+        }
+
+        if (seats[row - 1][seat - 1] == 1) {
+
+            System.out.println("Seat already booked!");
+            return;
+        }
+
+        seats[row - 1][seat - 1] = 1;
+
+        String bookingId = generateBookingId();
+
+        totalRevenue += TICKET_PRICE;
+
+        Booking booking = new Booking(
+                bookingId,
+                customerName,
+                movieName,
+                row,
+                seat,
+                TICKET_PRICE
+        );
+
+        booking.displayBookingDetails();
+    }
+
+    public static void cancelSeat(
+            Scanner sc,
+            int[][] seats) {
+
+        System.out.print("Enter Row (1-5): ");
+        int row = sc.nextInt();
+
+        System.out.print("Enter Seat (1-6): ");
+        int seat = sc.nextInt();
+
+        sc.nextLine();
+
+        if (row < 1 || row > ROWS ||
+            seat < 1 || seat > SEATS) {
+
+            System.out.println("Invalid row or seat!");
+            return;
+        }
+
+        if (seats[row - 1][seat - 1] == 0) {
+
+            System.out.println("Seat is not booked!");
+            return;
+        }
+
+        seats[row - 1][seat - 1] = 0;
+
+        totalRevenue -= TICKET_PRICE;
+
+        System.out.println(
+                "Booking cancelled successfully!");
+
+        System.out.println(
+                "₹" + TICKET_PRICE + " refunded.");
+    }
+
+    public static void showRevenue() {
+
+        System.out.println("\n===== REVENUE SUMMARY =====");
+
+        System.out.println(
+                "Ticket Price: ₹" + TICKET_PRICE);
+
+        System.out.println(
+                "Total Revenue: ₹" + totalRevenue);
+    }
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -33,7 +139,9 @@ public class MovieTicketBooking {
 
         while (true) {
 
-            System.out.println("\n===== MOVIE TICKET BOOKING =====");
+            System.out.println(
+                    "\n===== MOVIE TICKET BOOKING =====");
+
             System.out.println("1. Display Seats");
             System.out.println("2. Book Seat");
             System.out.println("3. Cancel Seat");
@@ -42,104 +150,25 @@ public class MovieTicketBooking {
 
             System.out.print("Enter your choice: ");
             int choice = sc.nextInt();
+
             sc.nextLine();
 
             switch (choice) {
 
                 case 1:
-
                     displaySeats(seats);
                     break;
 
                 case 2:
-
-                    System.out.print("Enter Customer Name: ");
-                    String customerName = sc.nextLine();
-
-                    System.out.print("Enter Movie Name: ");
-                    String movieName = sc.nextLine();
-
-                    System.out.print("Enter Row (1-5): ");
-                    int row = sc.nextInt();
-
-                    System.out.print("Enter Seat (1-6): ");
-                    int seat = sc.nextInt();
-
-                    if (row < 1 || row > ROWS ||
-                        seat < 1 || seat > SEATS) {
-
-                        System.out.println("Invalid row or seat!");
-
-                    } else if (seats[row - 1][seat - 1] == 1) {
-
-                        System.out.println("Seat already booked!");
-
-                    } else {
-
-                        seats[row - 1][seat - 1] = 1;
-
-                        String bookingId = String.format(
-                                "B%03d", bookingCounter);
-
-                        bookingCounter++;
-
-                        totalRevenue += TICKET_PRICE;
-
-                        Booking booking = new Booking(
-                                bookingId,
-                                customerName,
-                                movieName,
-                                row,
-                                seat,
-                                TICKET_PRICE
-                        );
-
-                        booking.displayBookingDetails();
-                    }
-
+                    bookSeat(sc, seats);
                     break;
 
                 case 3:
-
-                    System.out.print("Enter Row (1-5): ");
-                    int cancelRow = sc.nextInt();
-
-                    System.out.print("Enter Seat (1-6): ");
-                    int cancelSeat = sc.nextInt();
-
-                    if (cancelRow < 1 || cancelRow > ROWS ||
-                        cancelSeat < 1 || cancelSeat > SEATS) {
-
-                        System.out.println("Invalid row or seat!");
-
-                    } else if (seats[cancelRow - 1][cancelSeat - 1] == 0) {
-
-                        System.out.println("Seat is not booked!");
-
-                    } else {
-
-                        seats[cancelRow - 1][cancelSeat - 1] = 0;
-
-                        totalRevenue -= TICKET_PRICE;
-
-                        System.out.println(
-                                "Booking cancelled successfully!");
-
-                        System.out.println(
-                                "₹" + TICKET_PRICE + " refunded.");
-                    }
-
+                    cancelSeat(sc, seats);
                     break;
 
                 case 4:
-
-                    System.out.println("\n===== REVENUE SUMMARY =====");
-                    System.out.println(
-                            "Ticket Price: ₹" + TICKET_PRICE);
-
-                    System.out.println(
-                            "Total Revenue: ₹" + totalRevenue);
-
+                    showRevenue();
                     break;
 
                 case 5:
@@ -152,7 +181,8 @@ public class MovieTicketBooking {
 
                 default:
 
-                    System.out.println("Invalid choice!");
+                    System.out.println(
+                            "Invalid choice!");
             }
         }
     }
