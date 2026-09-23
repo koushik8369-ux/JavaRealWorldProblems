@@ -11,7 +11,45 @@ public class MovieTicketBooking {
         System.out.println("===== MOVIE TICKET BOOKING =====");
         System.out.println();
 
-        // Display seats
+        displaySeats(seats);
+
+        System.out.println();
+
+        System.out.print("Enter Row (1-5): ");
+        int row = sc.nextInt();
+
+        System.out.print("Enter Seat (1-6): ");
+        int seat = sc.nextInt();
+
+        row = row - 1;
+        seat = seat - 1;
+
+        if (row < 0 || row >= seats.length ||
+            seat < 0 || seat >= seats[row].length) {
+
+            System.out.println("Invalid seat selection!");
+
+        } else if (seats[row][seat] == 1) {
+
+            System.out.println("Seat already booked!");
+            System.out.println("Booking failed.");
+
+        } else {
+
+            seats[row][seat] = 1;
+
+            System.out.println();
+            System.out.println("Seat booked successfully!");
+
+            System.out.println();
+            displaySeats(seats);
+        }
+
+        sc.close();
+    }
+
+    static void displaySeats(int[][] seats) {
+
         System.out.println("      1  2  3  4  5  6");
 
         for (int i = 0; i < seats.length; i++) {
@@ -29,54 +67,5 @@ public class MovieTicketBooking {
 
             System.out.println();
         }
-
-        System.out.println();
-
-        // Take seat input
-        System.out.print("Enter Row (1-5): ");
-        int row = sc.nextInt();
-
-        System.out.print("Enter Seat (1-6): ");
-        int seat = sc.nextInt();
-
-        // Convert user input to array index
-        row = row - 1;
-        seat = seat - 1;
-
-        // Validate input
-        if (row < 0 || row >= seats.length ||
-            seat < 0 || seat >= seats[row].length) {
-
-            System.out.println("Invalid seat selection!");
-
-        } else {
-
-            seats[row][seat] = 1;
-
-            System.out.println();
-            System.out.println("Seat booked successfully!");
-
-            // Display updated seats
-            System.out.println();
-            System.out.println("      1  2  3  4  5  6");
-
-            for (int i = 0; i < seats.length; i++) {
-
-                System.out.print("Row " + (i + 1) + " ");
-
-                for (int j = 0; j < seats[i].length; j++) {
-
-                    if (seats[i][j] == 0) {
-                        System.out.print(" O ");
-                    } else {
-                        System.out.print(" X ");
-                    }
-                }
-
-                System.out.println();
-            }
-        }
-
-        sc.close();
     }
 }
