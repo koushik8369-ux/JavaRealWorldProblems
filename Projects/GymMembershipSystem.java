@@ -1,378 +1,143 @@
+import java.util.ArrayList;
 import java.util.Scanner;
 
 public class GymMembershipSystem {
 
-    static int memberId;
-    static String memberName;
-    static int age;
-    static String phoneNumber;
-    static String membershipPlan;
-    static int monthlyFee;
+    static ArrayList<Member> members = new ArrayList<>();
 
-    static int membershipMonths = 0;
-    static int totalRenewalAmount = 0;
+    public static int getMonthlyFee(String plan) {
 
-    static int totalDays = 0;
-    static int attendedDays = 0;
+        if (plan.equalsIgnoreCase("Basic")) {
+            return 500;
 
-    static int paymentCounter = 1;
-    static int totalPaid = 0;
+        } else if (plan.equalsIgnoreCase("Standard")) {
+            return 800;
 
-    static boolean memberRegistered = false;
+        } else if (plan.equalsIgnoreCase("Premium")) {
+            return 1200;
+        }
+
+        return -1;
+    }
+
+    public static boolean memberExists(int memberId) {
+
+        for (Member member : members) {
+
+            if (member.getMemberId() == memberId) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public static void registerMember(Scanner sc) {
 
         System.out.println("\n===== REGISTER MEMBER =====");
 
         System.out.print("Enter Member ID: ");
-        memberId = sc.nextInt();
+        int memberId = sc.nextInt();
         sc.nextLine();
 
+        if (memberExists(memberId)) {
+
+            System.out.println(
+                    "Member ID already exists!");
+
+            return;
+        }
+
         System.out.print("Enter Member Name: ");
-        memberName = sc.nextLine();
+        String memberName = sc.nextLine();
 
         System.out.print("Enter Age: ");
-        age = sc.nextInt();
+        int age = sc.nextInt();
         sc.nextLine();
 
         System.out.print("Enter Phone Number: ");
-        phoneNumber = sc.nextLine();
+        String phoneNumber = sc.nextLine();
 
         System.out.print(
                 "Enter Membership Plan (Basic/Standard/Premium): ");
-        membershipPlan = sc.nextLine();
 
-        if (!setMembershipPlan(membershipPlan)) {
-            System.out.println("Invalid membership plan!");
-            return;
-        }
+        String membershipPlan = sc.nextLine();
 
-        memberRegistered = true;
+        int monthlyFee =
+                getMonthlyFee(membershipPlan);
 
-        membershipMonths = 0;
-        totalRenewalAmount = 0;
-        totalDays = 0;
-        attendedDays = 0;
-        totalPaid = 0;
-        paymentCounter = 1;
-
-        System.out.println(
-                "\nMember registered successfully!");
-    }
-
-    public static boolean setMembershipPlan(String plan) {
-
-        if (plan.equalsIgnoreCase("Basic")) {
-
-            membershipPlan = "Basic";
-            monthlyFee = 500;
-            return true;
-
-        } else if (plan.equalsIgnoreCase("Standard")) {
-
-            membershipPlan = "Standard";
-            monthlyFee = 800;
-            return true;
-
-        } else if (plan.equalsIgnoreCase("Premium")) {
-
-            membershipPlan = "Premium";
-            monthlyFee = 1200;
-            return true;
-        }
-
-        return false;
-    }
-
-    public static void viewMemberDetails() {
-
-        if (!memberRegistered) {
+        if (monthlyFee == -1) {
 
             System.out.println(
-                    "\nNo member registered yet.");
+                    "Invalid membership plan!");
+
             return;
         }
 
-        System.out.println("\n===== MEMBER DETAILS =====");
+        Member member = new Member(
+                memberId,
+                memberName,
+                age,
+                phoneNumber,
+                membershipPlan,
+                monthlyFee
+        );
 
-        System.out.println("Member ID: " + memberId);
-        System.out.println("Name: " + memberName);
-        System.out.println("Age: " + age);
-        System.out.println("Phone: " + phoneNumber);
-        System.out.println("Membership Plan: " + membershipPlan);
-        System.out.println("Monthly Fee: ₹" + monthlyFee);
+        members.add(member);
 
         System.out.println(
-                "Membership Duration: "
-                        + membershipMonths + " month(s)");
+                "Member registered successfully!");
+    }
+
+    public static void viewAllMembers() {
+
+        if (members.isEmpty()) {
+
+            System.out.println(
+                    "\nNo members registered.");
+
+            return;
+        }
 
         System.out.println(
-                "Total Paid: ₹" + totalPaid);
+                "\n===== ALL MEMBERS =====");
+
+        for (Member member : members) {
+            member.displayDetails();
+        }
     }
 
-    public static void checkMembershipFee() {
-
-        if (!memberRegistered) {
-
-            System.out.println(
-                    "\nNo member registered yet.");
-            return;
-        }
-
-        System.out.println("\n===== MEMBERSHIP FEE =====");
-        System.out.println("Plan: " + membershipPlan);
-        System.out.println("Monthly Fee: ₹" + monthlyFee);
-    }
-
-    public static void renewMembership(Scanner sc) {
-
-        if (!memberRegistered) {
-
-            System.out.println(
-                    "\nNo member registered yet.");
-            return;
-        }
-
-        System.out.println("\n===== RENEW MEMBERSHIP =====");
+    public static Member searchMember(Scanner sc) {
 
         System.out.print(
-                "Enter number of months to renew: ");
+                "Enter Member ID: ");
 
-        int renewalMonths = sc.nextInt();
+        int memberId = sc.nextInt();
         sc.nextLine();
 
-        if (renewalMonths <= 0) {
+        for (Member member : members) {
 
-            System.out.println(
-                    "Invalid number of months!");
-            return;
+            if (member.getMemberId() == memberId) {
+
+                return member;
+            }
         }
 
-        int renewalAmount =
-                monthlyFee * renewalMonths;
-
-        membershipMonths += renewalMonths;
-        totalRenewalAmount += renewalAmount;
-
-        System.out.println(
-                "\n===== RENEWAL SUCCESSFUL =====");
-
-        System.out.println(
-                "Plan: " + membershipPlan);
-
-        System.out.println(
-                "Duration: " + renewalMonths + " month(s)");
-
-        System.out.println(
-                "Monthly Fee: ₹" + monthlyFee);
-
-        System.out.println(
-                "Renewal Amount: ₹" + renewalAmount);
-
-        System.out.println(
-                "Total Membership Duration: "
-                        + membershipMonths + " month(s)");
+        return null;
     }
 
-    public static void markAttendance(Scanner sc) {
-
-        if (!memberRegistered) {
-
-            System.out.println(
-                    "\nNo member registered yet.");
-            return;
-        }
-
-        System.out.println("\n===== MARK ATTENDANCE =====");
-
-        System.out.print(
-                "Did the member attend today? (yes/no): ");
-
-        String attendance = sc.nextLine();
-
-        if (attendance.equalsIgnoreCase("yes")) {
-
-            totalDays++;
-            attendedDays++;
-
-            System.out.println(
-                    "Attendance marked successfully.");
-
-        } else if (attendance.equalsIgnoreCase("no")) {
-
-            totalDays++;
-
-            System.out.println(
-                    "Absent recorded.");
-
-        } else {
-
-            System.out.println(
-                    "Invalid attendance input.");
-        }
-    }
-
-    public static void viewAttendance() {
-
-        if (!memberRegistered) {
-
-            System.out.println(
-                    "\nNo member registered yet.");
-            return;
-        }
-
-        System.out.println(
-                "\n===== ATTENDANCE SUMMARY =====");
-
-        System.out.println(
-                "Total Days: " + totalDays);
-
-        System.out.println(
-                "Attended Days: " + attendedDays);
-
-        System.out.println(
-                "Absent Days: "
-                        + (totalDays - attendedDays));
-
-        if (totalDays > 0) {
-
-            double percentage =
-                    ((double) attendedDays / totalDays) * 100;
-
-            System.out.printf(
-                    "Attendance Percentage: %.2f%%%n",
-                    percentage);
-
-        } else {
-
-            System.out.println(
-                    "Attendance Percentage: 0.00%");
-        }
-    }
-
-    public static void makePayment(Scanner sc) {
-
-        if (!memberRegistered) {
-
-            System.out.println(
-                    "\nNo member registered yet.");
-            return;
-        }
-
-        System.out.println("\n===== MAKE PAYMENT =====");
-
-        System.out.print("Enter Payment Amount: ₹");
-        int paymentAmount = sc.nextInt();
-        sc.nextLine();
-
-        if (paymentAmount <= 0) {
-
-            System.out.println(
-                    "Invalid payment amount!");
-            return;
-        }
-
-        System.out.print(
-                "Enter Payment Type (UPI/Card/Cash): ");
-
-        String paymentType = sc.nextLine();
-
-        if (!(paymentType.equalsIgnoreCase("UPI")
-                || paymentType.equalsIgnoreCase("Card")
-                || paymentType.equalsIgnoreCase("Cash"))) {
-
-            System.out.println(
-                    "Invalid payment type!");
-            return;
-        }
-
-        String paymentId =
-                String.format("P%03d", paymentCounter);
-
-        paymentCounter++;
-
-        totalPaid += paymentAmount;
-
-        System.out.println(
-                "\n===== PAYMENT SUCCESSFUL =====");
-
-        System.out.println(
-                "Payment ID: " + paymentId);
-
-        System.out.println(
-                "Amount Paid: ₹" + paymentAmount);
-
-        System.out.println(
-                "Payment Type: " + paymentType);
-
-        System.out.println(
-                "Payment Status: Successful");
-
-        System.out.println(
-                "Total Paid: ₹" + totalPaid);
-    }
-
-    public static void viewPaymentSummary() {
-
-        if (!memberRegistered) {
-
-            System.out.println(
-                    "\nNo member registered yet.");
-            return;
-        }
-
-        System.out.println(
-                "\n===== PAYMENT SUMMARY =====");
-
-        System.out.println(
-                "Member: " + memberName);
-
-        System.out.println(
-                "Total Amount Paid: ₹" + totalPaid);
-
-        System.out.println(
-                "Payments Made: " + (paymentCounter - 1));
-    }
-
-    public static void searchMember(Scanner sc) {
-
-        if (!memberRegistered) {
-
-            System.out.println(
-                    "\nNo member registered yet.");
-            return;
-        }
+    public static void searchMemberMenu(Scanner sc) {
 
         System.out.println("\n===== SEARCH MEMBER =====");
 
-        System.out.print(
-                "Enter Member ID to search: ");
+        Member member = searchMember(sc);
 
-        int searchId = sc.nextInt();
-        sc.nextLine();
-
-        if (searchId == memberId) {
+        if (member != null) {
 
             System.out.println(
                     "\n===== MEMBER FOUND =====");
 
-            System.out.println(
-                    "Member ID: " + memberId);
-
-            System.out.println(
-                    "Name: " + memberName);
-
-            System.out.println(
-                    "Age: " + age);
-
-            System.out.println(
-                    "Phone: " + phoneNumber);
-
-            System.out.println(
-                    "Plan: " + membershipPlan);
-
-            System.out.println(
-                    "Monthly Fee: ₹" + monthlyFee);
+            member.displayDetails();
 
         } else {
 
@@ -383,25 +148,15 @@ public class GymMembershipSystem {
 
     public static void updateMember(Scanner sc) {
 
-        if (!memberRegistered) {
-
-            System.out.println(
-                    "\nNo member registered yet.");
-            return;
-        }
-
         System.out.println("\n===== UPDATE MEMBER =====");
 
-        System.out.print(
-                "Enter Member ID: ");
+        Member member = searchMember(sc);
 
-        int updateId = sc.nextInt();
-        sc.nextLine();
-
-        if (updateId != memberId) {
+        if (member == null) {
 
             System.out.println(
                     "Member not found!");
+
             return;
         }
 
@@ -420,7 +175,9 @@ public class GymMembershipSystem {
                 System.out.print(
                         "Enter New Name: ");
 
-                memberName = sc.nextLine();
+                String newName = sc.nextLine();
+
+                member.setMemberName(newName);
 
                 System.out.println(
                         "Name updated successfully!");
@@ -432,7 +189,9 @@ public class GymMembershipSystem {
                 System.out.print(
                         "Enter New Phone Number: ");
 
-                phoneNumber = sc.nextLine();
+                String newPhone = sc.nextLine();
+
+                member.setPhoneNumber(newPhone);
 
                 System.out.println(
                         "Phone number updated successfully!");
@@ -446,18 +205,23 @@ public class GymMembershipSystem {
 
                 String newPlan = sc.nextLine();
 
-                if (setMembershipPlan(newPlan)) {
+                int newFee =
+                        getMonthlyFee(newPlan);
 
-                    System.out.println(
-                            "Membership plan updated successfully!");
-
-                    System.out.println(
-                            "New Monthly Fee: ₹" + monthlyFee);
-
-                } else {
+                if (newFee == -1) {
 
                     System.out.println(
                             "Invalid membership plan!");
+
+                } else {
+
+                    member.setMembershipPlan(
+                            newPlan,
+                            newFee
+                    );
+
+                    System.out.println(
+                            "Membership plan updated successfully!");
                 }
 
                 break;
@@ -479,16 +243,10 @@ public class GymMembershipSystem {
                     "\n===== GYM MEMBERSHIP SYSTEM =====");
 
             System.out.println("1. Register Member");
-            System.out.println("2. View Member Details");
-            System.out.println("3. Check Membership Fee");
-            System.out.println("4. Renew Membership");
-            System.out.println("5. Mark Attendance");
-            System.out.println("6. View Attendance");
-            System.out.println("7. Make Payment");
-            System.out.println("8. View Payment Summary");
-            System.out.println("9. Search Member");
-            System.out.println("10. Update Member Details");
-            System.out.println("11. Exit");
+            System.out.println("2. View All Members");
+            System.out.println("3. Search Member");
+            System.out.println("4. Update Member");
+            System.out.println("5. Exit");
 
             System.out.print("Enter your choice: ");
 
@@ -502,42 +260,18 @@ public class GymMembershipSystem {
                     break;
 
                 case 2:
-                    viewMemberDetails();
+                    viewAllMembers();
                     break;
 
                 case 3:
-                    checkMembershipFee();
+                    searchMemberMenu(sc);
                     break;
 
                 case 4:
-                    renewMembership(sc);
-                    break;
-
-                case 5:
-                    markAttendance(sc);
-                    break;
-
-                case 6:
-                    viewAttendance();
-                    break;
-
-                case 7:
-                    makePayment(sc);
-                    break;
-
-                case 8:
-                    viewPaymentSummary();
-                    break;
-
-                case 9:
-                    searchMember(sc);
-                    break;
-
-                case 10:
                     updateMember(sc);
                     break;
 
-                case 11:
+                case 5:
 
                     System.out.println(
                             "Thank you for using Gym Membership System!");
