@@ -15,6 +15,9 @@ public class GymMembershipSystem {
     static int totalDays = 0;
     static int attendedDays = 0;
 
+    static int paymentCounter = 1;
+    static int totalPaid = 0;
+
     static boolean memberRegistered = false;
 
     public static void registerMember(Scanner sc) {
@@ -63,6 +66,8 @@ public class GymMembershipSystem {
         totalRenewalAmount = 0;
         totalDays = 0;
         attendedDays = 0;
+        totalPaid = 0;
+        paymentCounter = 1;
 
         System.out.println(
                 "\nMember registered successfully!");
@@ -86,9 +91,13 @@ public class GymMembershipSystem {
         System.out.println("Phone: " + phoneNumber);
         System.out.println("Membership Plan: " + membershipPlan);
         System.out.println("Monthly Fee: ₹" + monthlyFee);
+
         System.out.println(
                 "Membership Duration: "
                         + membershipMonths + " month(s)");
+
+        System.out.println(
+                "Total Paid: ₹" + totalPaid);
     }
 
     public static void checkMembershipFee() {
@@ -235,6 +244,94 @@ public class GymMembershipSystem {
         }
     }
 
+    public static void makePayment(Scanner sc) {
+
+        if (!memberRegistered) {
+
+            System.out.println(
+                    "\nNo member registered yet.");
+
+            return;
+        }
+
+        System.out.println("\n===== MAKE PAYMENT =====");
+
+        System.out.print("Enter Payment Amount: ₹");
+        int paymentAmount = sc.nextInt();
+        sc.nextLine();
+
+        if (paymentAmount <= 0) {
+
+            System.out.println(
+                    "Invalid payment amount!");
+
+            return;
+        }
+
+        System.out.print(
+                "Enter Payment Type (UPI/Card/Cash): ");
+
+        String paymentType = sc.nextLine();
+
+        if (!(paymentType.equalsIgnoreCase("UPI")
+                || paymentType.equalsIgnoreCase("Card")
+                || paymentType.equalsIgnoreCase("Cash"))) {
+
+            System.out.println(
+                    "Invalid payment type!");
+
+            return;
+        }
+
+        String paymentId =
+                String.format("P%03d", paymentCounter);
+
+        paymentCounter++;
+
+        totalPaid += paymentAmount;
+
+        System.out.println(
+                "\n===== PAYMENT SUCCESSFUL =====");
+
+        System.out.println(
+                "Payment ID: " + paymentId);
+
+        System.out.println(
+                "Amount Paid: ₹" + paymentAmount);
+
+        System.out.println(
+                "Payment Type: " + paymentType);
+
+        System.out.println(
+                "Payment Status: Successful");
+
+        System.out.println(
+                "Total Paid: ₹" + totalPaid);
+    }
+
+    public static void viewPaymentSummary() {
+
+        if (!memberRegistered) {
+
+            System.out.println(
+                    "\nNo member registered yet.");
+
+            return;
+        }
+
+        System.out.println(
+                "\n===== PAYMENT SUMMARY =====");
+
+        System.out.println(
+                "Member: " + memberName);
+
+        System.out.println(
+                "Total Amount Paid: ₹" + totalPaid);
+
+        System.out.println(
+                "Payments Made: " + (paymentCounter - 1));
+    }
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -250,7 +347,9 @@ public class GymMembershipSystem {
             System.out.println("4. Renew Membership");
             System.out.println("5. Mark Attendance");
             System.out.println("6. View Attendance");
-            System.out.println("7. Exit");
+            System.out.println("7. Make Payment");
+            System.out.println("8. View Payment Summary");
+            System.out.println("9. Exit");
 
             System.out.print("Enter your choice: ");
             int choice = sc.nextInt();
@@ -283,6 +382,14 @@ public class GymMembershipSystem {
                     break;
 
                 case 7:
+                    makePayment(sc);
+                    break;
+
+                case 8:
+                    viewPaymentSummary();
+                    break;
+
+                case 9:
 
                     System.out.println(
                             "Thank you for using Gym Membership System!");
