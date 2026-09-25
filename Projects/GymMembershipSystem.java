@@ -42,20 +42,7 @@ public class GymMembershipSystem {
                 "Enter Membership Plan (Basic/Standard/Premium): ");
         membershipPlan = sc.nextLine();
 
-        if (membershipPlan.equalsIgnoreCase("Basic")) {
-
-            monthlyFee = 500;
-
-        } else if (membershipPlan.equalsIgnoreCase("Standard")) {
-
-            monthlyFee = 800;
-
-        } else if (membershipPlan.equalsIgnoreCase("Premium")) {
-
-            monthlyFee = 1200;
-
-        } else {
-
+        if (!setMembershipPlan(membershipPlan)) {
             System.out.println("Invalid membership plan!");
             return;
         }
@@ -73,13 +60,36 @@ public class GymMembershipSystem {
                 "\nMember registered successfully!");
     }
 
+    public static boolean setMembershipPlan(String plan) {
+
+        if (plan.equalsIgnoreCase("Basic")) {
+
+            membershipPlan = "Basic";
+            monthlyFee = 500;
+            return true;
+
+        } else if (plan.equalsIgnoreCase("Standard")) {
+
+            membershipPlan = "Standard";
+            monthlyFee = 800;
+            return true;
+
+        } else if (plan.equalsIgnoreCase("Premium")) {
+
+            membershipPlan = "Premium";
+            monthlyFee = 1200;
+            return true;
+        }
+
+        return false;
+    }
+
     public static void viewMemberDetails() {
 
         if (!memberRegistered) {
 
             System.out.println(
                     "\nNo member registered yet.");
-
             return;
         }
 
@@ -106,12 +116,10 @@ public class GymMembershipSystem {
 
             System.out.println(
                     "\nNo member registered yet.");
-
             return;
         }
 
         System.out.println("\n===== MEMBERSHIP FEE =====");
-
         System.out.println("Plan: " + membershipPlan);
         System.out.println("Monthly Fee: ₹" + monthlyFee);
     }
@@ -122,7 +130,6 @@ public class GymMembershipSystem {
 
             System.out.println(
                     "\nNo member registered yet.");
-
             return;
         }
 
@@ -138,7 +145,6 @@ public class GymMembershipSystem {
 
             System.out.println(
                     "Invalid number of months!");
-
             return;
         }
 
@@ -174,7 +180,6 @@ public class GymMembershipSystem {
 
             System.out.println(
                     "\nNo member registered yet.");
-
             return;
         }
 
@@ -213,11 +218,11 @@ public class GymMembershipSystem {
 
             System.out.println(
                     "\nNo member registered yet.");
-
             return;
         }
 
-        System.out.println("\n===== ATTENDANCE SUMMARY =====");
+        System.out.println(
+                "\n===== ATTENDANCE SUMMARY =====");
 
         System.out.println(
                 "Total Days: " + totalDays);
@@ -226,7 +231,8 @@ public class GymMembershipSystem {
                 "Attended Days: " + attendedDays);
 
         System.out.println(
-                "Absent Days: " + (totalDays - attendedDays));
+                "Absent Days: "
+                        + (totalDays - attendedDays));
 
         if (totalDays > 0) {
 
@@ -250,7 +256,6 @@ public class GymMembershipSystem {
 
             System.out.println(
                     "\nNo member registered yet.");
-
             return;
         }
 
@@ -264,7 +269,6 @@ public class GymMembershipSystem {
 
             System.out.println(
                     "Invalid payment amount!");
-
             return;
         }
 
@@ -279,7 +283,6 @@ public class GymMembershipSystem {
 
             System.out.println(
                     "Invalid payment type!");
-
             return;
         }
 
@@ -315,7 +318,6 @@ public class GymMembershipSystem {
 
             System.out.println(
                     "\nNo member registered yet.");
-
             return;
         }
 
@@ -330,6 +332,141 @@ public class GymMembershipSystem {
 
         System.out.println(
                 "Payments Made: " + (paymentCounter - 1));
+    }
+
+    public static void searchMember(Scanner sc) {
+
+        if (!memberRegistered) {
+
+            System.out.println(
+                    "\nNo member registered yet.");
+            return;
+        }
+
+        System.out.println("\n===== SEARCH MEMBER =====");
+
+        System.out.print(
+                "Enter Member ID to search: ");
+
+        int searchId = sc.nextInt();
+        sc.nextLine();
+
+        if (searchId == memberId) {
+
+            System.out.println(
+                    "\n===== MEMBER FOUND =====");
+
+            System.out.println(
+                    "Member ID: " + memberId);
+
+            System.out.println(
+                    "Name: " + memberName);
+
+            System.out.println(
+                    "Age: " + age);
+
+            System.out.println(
+                    "Phone: " + phoneNumber);
+
+            System.out.println(
+                    "Plan: " + membershipPlan);
+
+            System.out.println(
+                    "Monthly Fee: ₹" + monthlyFee);
+
+        } else {
+
+            System.out.println(
+                    "Member not found!");
+        }
+    }
+
+    public static void updateMember(Scanner sc) {
+
+        if (!memberRegistered) {
+
+            System.out.println(
+                    "\nNo member registered yet.");
+            return;
+        }
+
+        System.out.println("\n===== UPDATE MEMBER =====");
+
+        System.out.print(
+                "Enter Member ID: ");
+
+        int updateId = sc.nextInt();
+        sc.nextLine();
+
+        if (updateId != memberId) {
+
+            System.out.println(
+                    "Member not found!");
+            return;
+        }
+
+        System.out.println("\n1. Update Name");
+        System.out.println("2. Update Phone Number");
+        System.out.println("3. Update Membership Plan");
+
+        System.out.print("Enter choice: ");
+        int choice = sc.nextInt();
+        sc.nextLine();
+
+        switch (choice) {
+
+            case 1:
+
+                System.out.print(
+                        "Enter New Name: ");
+
+                memberName = sc.nextLine();
+
+                System.out.println(
+                        "Name updated successfully!");
+
+                break;
+
+            case 2:
+
+                System.out.print(
+                        "Enter New Phone Number: ");
+
+                phoneNumber = sc.nextLine();
+
+                System.out.println(
+                        "Phone number updated successfully!");
+
+                break;
+
+            case 3:
+
+                System.out.print(
+                        "Enter New Plan (Basic/Standard/Premium): ");
+
+                String newPlan = sc.nextLine();
+
+                if (setMembershipPlan(newPlan)) {
+
+                    System.out.println(
+                            "Membership plan updated successfully!");
+
+                    System.out.println(
+                            "New Monthly Fee: ₹" + monthlyFee);
+
+                } else {
+
+                    System.out.println(
+                            "Invalid membership plan!");
+                }
+
+                break;
+
+            default:
+
+                System.out.println(
+                        "Invalid choice!");
+        }
     }
 
     public static void main(String[] args) {
@@ -349,9 +486,12 @@ public class GymMembershipSystem {
             System.out.println("6. View Attendance");
             System.out.println("7. Make Payment");
             System.out.println("8. View Payment Summary");
-            System.out.println("9. Exit");
+            System.out.println("9. Search Member");
+            System.out.println("10. Update Member Details");
+            System.out.println("11. Exit");
 
             System.out.print("Enter your choice: ");
+
             int choice = sc.nextInt();
             sc.nextLine();
 
@@ -390,6 +530,14 @@ public class GymMembershipSystem {
                     break;
 
                 case 9:
+                    searchMember(sc);
+                    break;
+
+                case 10:
+                    updateMember(sc);
+                    break;
+
+                case 11:
 
                     System.out.println(
                             "Thank you for using Gym Membership System!");
