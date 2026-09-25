@@ -9,6 +9,9 @@ public class GymMembershipSystem {
     static String membershipPlan;
     static int monthlyFee;
 
+    static int membershipMonths = 0;
+    static int totalRenewalAmount = 0;
+
     static boolean memberRegistered = false;
 
     public static void registerMember(Scanner sc) {
@@ -53,6 +56,9 @@ public class GymMembershipSystem {
 
         memberRegistered = true;
 
+        membershipMonths = 0;
+        totalRenewalAmount = 0;
+
         System.out.println(
                 "\nMember registered successfully!");
     }
@@ -75,6 +81,8 @@ public class GymMembershipSystem {
         System.out.println("Phone: " + phoneNumber);
         System.out.println("Membership Plan: " + membershipPlan);
         System.out.println("Monthly Fee: ₹" + monthlyFee);
+        System.out.println(
+                "Membership Duration: " + membershipMonths + " month(s)");
     }
 
     public static void checkMembershipFee() {
@@ -89,11 +97,60 @@ public class GymMembershipSystem {
 
         System.out.println("\n===== MEMBERSHIP FEE =====");
 
+        System.out.println("Plan: " + membershipPlan);
+        System.out.println("Monthly Fee: ₹" + monthlyFee);
+    }
+
+    public static void renewMembership(Scanner sc) {
+
+        if (!memberRegistered) {
+
+            System.out.println(
+                    "\nNo member registered yet.");
+
+            return;
+        }
+
+        System.out.println("\n===== RENEW MEMBERSHIP =====");
+
+        System.out.print(
+                "Enter number of months to renew: ");
+
+        int renewalMonths = sc.nextInt();
+        sc.nextLine();
+
+        if (renewalMonths <= 0) {
+
+            System.out.println(
+                    "Invalid number of months!");
+
+            return;
+        }
+
+        int renewalAmount =
+                monthlyFee * renewalMonths;
+
+        membershipMonths += renewalMonths;
+        totalRenewalAmount += renewalAmount;
+
+        System.out.println(
+                "\n===== RENEWAL SUCCESSFUL =====");
+
         System.out.println(
                 "Plan: " + membershipPlan);
 
         System.out.println(
+                "Duration: " + renewalMonths + " month(s)");
+
+        System.out.println(
                 "Monthly Fee: ₹" + monthlyFee);
+
+        System.out.println(
+                "Renewal Amount: ₹" + renewalAmount);
+
+        System.out.println(
+                "Total Membership Duration: "
+                        + membershipMonths + " month(s)");
     }
 
     public static void main(String[] args) {
@@ -108,7 +165,8 @@ public class GymMembershipSystem {
             System.out.println("1. Register Member");
             System.out.println("2. View Member Details");
             System.out.println("3. Check Membership Fee");
-            System.out.println("4. Exit");
+            System.out.println("4. Renew Membership");
+            System.out.println("5. Exit");
 
             System.out.print("Enter your choice: ");
             int choice = sc.nextInt();
@@ -129,6 +187,10 @@ public class GymMembershipSystem {
                     break;
 
                 case 4:
+                    renewMembership(sc);
+                    break;
+
+                case 5:
 
                     System.out.println(
                             "Thank you for using Gym Membership System!");
