@@ -12,6 +12,9 @@ public class GymMembershipSystem {
     static int membershipMonths = 0;
     static int totalRenewalAmount = 0;
 
+    static int totalDays = 0;
+    static int attendedDays = 0;
+
     static boolean memberRegistered = false;
 
     public static void registerMember(Scanner sc) {
@@ -58,6 +61,8 @@ public class GymMembershipSystem {
 
         membershipMonths = 0;
         totalRenewalAmount = 0;
+        totalDays = 0;
+        attendedDays = 0;
 
         System.out.println(
                 "\nMember registered successfully!");
@@ -82,7 +87,8 @@ public class GymMembershipSystem {
         System.out.println("Membership Plan: " + membershipPlan);
         System.out.println("Monthly Fee: ₹" + monthlyFee);
         System.out.println(
-                "Membership Duration: " + membershipMonths + " month(s)");
+                "Membership Duration: "
+                        + membershipMonths + " month(s)");
     }
 
     public static void checkMembershipFee() {
@@ -153,6 +159,82 @@ public class GymMembershipSystem {
                         + membershipMonths + " month(s)");
     }
 
+    public static void markAttendance(Scanner sc) {
+
+        if (!memberRegistered) {
+
+            System.out.println(
+                    "\nNo member registered yet.");
+
+            return;
+        }
+
+        System.out.println("\n===== MARK ATTENDANCE =====");
+
+        System.out.print(
+                "Did the member attend today? (yes/no): ");
+
+        String attendance = sc.nextLine();
+
+        if (attendance.equalsIgnoreCase("yes")) {
+
+            totalDays++;
+            attendedDays++;
+
+            System.out.println(
+                    "Attendance marked successfully.");
+
+        } else if (attendance.equalsIgnoreCase("no")) {
+
+            totalDays++;
+
+            System.out.println(
+                    "Absent recorded.");
+
+        } else {
+
+            System.out.println(
+                    "Invalid attendance input.");
+        }
+    }
+
+    public static void viewAttendance() {
+
+        if (!memberRegistered) {
+
+            System.out.println(
+                    "\nNo member registered yet.");
+
+            return;
+        }
+
+        System.out.println("\n===== ATTENDANCE SUMMARY =====");
+
+        System.out.println(
+                "Total Days: " + totalDays);
+
+        System.out.println(
+                "Attended Days: " + attendedDays);
+
+        System.out.println(
+                "Absent Days: " + (totalDays - attendedDays));
+
+        if (totalDays > 0) {
+
+            double percentage =
+                    ((double) attendedDays / totalDays) * 100;
+
+            System.out.printf(
+                    "Attendance Percentage: %.2f%%%n",
+                    percentage);
+
+        } else {
+
+            System.out.println(
+                    "Attendance Percentage: 0.00%");
+        }
+    }
+
     public static void main(String[] args) {
 
         Scanner sc = new Scanner(System.in);
@@ -166,7 +248,9 @@ public class GymMembershipSystem {
             System.out.println("2. View Member Details");
             System.out.println("3. Check Membership Fee");
             System.out.println("4. Renew Membership");
-            System.out.println("5. Exit");
+            System.out.println("5. Mark Attendance");
+            System.out.println("6. View Attendance");
+            System.out.println("7. Exit");
 
             System.out.print("Enter your choice: ");
             int choice = sc.nextInt();
@@ -191,6 +275,14 @@ public class GymMembershipSystem {
                     break;
 
                 case 5:
+                    markAttendance(sc);
+                    break;
+
+                case 6:
+                    viewAttendance();
+                    break;
+
+                case 7:
 
                     System.out.println(
                             "Thank you for using Gym Membership System!");
